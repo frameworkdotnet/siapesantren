@@ -1,13 +1,13 @@
 <?php
 class Model_login extends CI_Model {
 
-    function login($username1,$username2,$password){
-        $query=$this->db->query("select * 
-                                        from user_member a 
-                                        join member b 
-                                on a.id_member=b.id_member 
-                                where (a.username = ? or b.email = ?) and a.password = ?
-                            ");
+    function login($username,$sebagai,$password){
+        $query=$this->db->query("select *,a.id as user_id,b.id as id_santri 
+                                        from user a 
+                                        join data_santri b 
+                                on a.nis=b.nis 
+                                where a.nis = ? and a.password = ? and a.sebagai = ?
+                            ",array($username,$password,$sebagai));
         return $query;
     }
     function cek_email_exist($email){

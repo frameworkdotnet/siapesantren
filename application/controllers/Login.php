@@ -8,6 +8,9 @@ class Login extends CI_Controller {
         parent::__construct();
         $this->load->model('Model_login');
     }
+    function n(){
+    	echo sha1("18/06/1994");
+    }
 	public function index()
 	{
 		$this->load->view("login");
@@ -19,11 +22,45 @@ class Login extends CI_Controller {
 		if(sizeof($this->input->post())>0){
 			$username=$this->db->escape_str($this->input->post("username"));
 			$password=$this->db->escape_str($this->input->post("password"));
-			$gen_pass=sha1($password);
-			$result=$this->Model_login->login($username,$username,$gen_pass);
-			if($result->num_rows()==1){
-					
+			$sebagai=$this->db->escape_str($this->input->post("sebagai"));
+			if($sebagai=="admin"){
+				$gen_pass=sha1($password);
+				$result=$this->Model_login->login($username,$sebagai,$gen_pass);
+				if($result->num_rows()==1){
+					$result=$result->row();
+					$this->session->set_userdata(array(
+						'login'=>true,
+						'nis'=>$result->nis,
+						'username'=>$result->nis,
+						'nama'=>$result->nama,
+						'id_santri'=>$result->id_santri,
+						'role'=>"admin"
+					));
+					$this->db->where("id",$result->user_id);
+					$this->db->update("user",array("lastlogin"=>date("Y-m-d h:i:s")));	
+					redirect("admin");		
+				}
+			}else if($sebagai=="santri"){
+				$gen_pass=sha1($password);
+				$result=$this->Model_login->login($username,$sebagai,$gen_pass);
+				if($result->num_rows()==1){
+					$result=$result->row();
+					$this->session->set_userdata(array(
+						'login'=>true,
+						'nis'=>$result->nis,
+						'username'=>$result->nis,
+						'nama'=>$result->nama,
+						'id_santri'=>$result->id_santri,
+						'role'=>"santri"
+					));
+					$this->db->where("id",$result->user_id);
+					$this->db->update("user",array("lastlogin"=>date("Y-m-d h:i:s")));	
+					redirect("admin");		
+				}
+			}else{
+
 			}
+
 		}else{
 			show_404();
 		}

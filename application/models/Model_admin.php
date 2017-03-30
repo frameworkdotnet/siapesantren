@@ -19,6 +19,16 @@ class Model_admin extends CI_Model {
         $query=$this->db->get("barang");
         return $query;
     }
+    public function get_penawaran($id=NULL){
+        if($id!=NULL){$this->db->where("id",$id);}
+        $query=$this->db->get("penawaran");
+        return $query;
+    }
+    public function get_ta($id=NULL){
+        if($id!=NULL){$this->db->where("id",$id);}
+        $query=$this->db->get("tahunajaran");
+        return $query;
+    }
     public function send_email($to_email,$subjek,$msg){
                 $config = Array(
                         'protocol' => 'smtp',

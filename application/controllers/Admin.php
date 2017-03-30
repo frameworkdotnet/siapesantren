@@ -20,11 +20,12 @@ class Admin extends CI_Controller {
 	 */
 	public function __construct(){
                 parent::__construct();
-                $this->load->model('Model_admin');
-
-                $this->session->set_userdata(array("username"=>"restaandy"));
-                $this->session->set_userdata(array("nama"=>"Andy"));
-                $this->session->set_userdata(array("id_member"=>"Rtyg45Der"));
+                if($this->session->userdata("login")!=true&&$this->session->userdata("id_santri")==NULL&&$this->session->userdata("nis")==NULL){
+                	redirect("login");
+                }else{
+                	$this->load->model('Model_admin');
+                }
+                
     }
 	public function dashboard($content="",$key=NULL){
 		if($key!=NULL && $key=="xxx!@#xxx"){
@@ -41,14 +42,11 @@ class Admin extends CI_Controller {
 	public function index()
 	{
 		$data['title']="Dashboard | Admin";
-
 		$data['title2']="Dashboard";
 		$data['subtitle2']="";
 		$data['breadcumbparenticon']="fa fa-dashboard";
 		$data['breadcrumb']=array("Dashboard"=>"");
-		$data['logo']="Toko Online";
-		$data['jml_toko']=$this->Model_admin->get_toko_by_member($this->session->userdata("id_member"));
-		$data['jml_barang']=$this->Model_admin->get_stok($this->session->userdata("id_member"));	
+		$data['logo']="Toko Online";	
 		$data['content']=$this->load->view("page_admin/dashboard",$data,true);
 		$this->dashboard($data,"xxx!@#xxx");
 
@@ -198,6 +196,84 @@ class Admin extends CI_Controller {
 		}
 		
 		$this->dashboard($data,"xxx!@#xxx");
+	}
+	public function penawaran(){
+		if($this->input->post("id_penawaranedit")!=NULL){
+			$this->db->where("id",$this->input->post("id_penawaranedit"));
+			$this->db->update("penawaran",array("penawaran"=>$this->input->post("penawaran")));
+		}
+		if($this->input->post("id_penawaranhapus")!=NULL){
+			$this->db->where("id",$this->input->post("id_penawaranhapus"));
+			$this->db->delete("penawaran");
+		}
+		$data['title']="Program Penawaran";
+		$data['title2']="Program Penawaran ";
+		$data['subtitle2']="";
+		$data['breadcumbparenticon']="fa fa-dashboard";
+		$data['breadcrumb']=array("Program Penawaran"=>"");
+		$data['logo']="Toko Online";
+		$data['penawaran']=$this->Model_admin->get_penawaran();	
+		$data['content']=$this->load->view("page_admin/penawaran",$data,true);
+		$this->dashboard($data,"xxx!@#xxx");
+	}
+	function simpanpenawaran(){
+		if(sizeof($this->input->post())>0){
+			$datainput=array(
+				"penawaran"=>$this->input->post('nama_penawaran')
+			);
+			$this->db->insert("penawaran",$datainput);
+			$row_change=$this->db->affected_rows();
+			if($row_change>=0){
+				$this->session->set_flashdata("simpan",array("msg"=>"Data telah di tambahkan","status"=>true,"row_change"=>$row_change));	
+			}else{
+				$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
+			}
+			redirect("admin/penawaran");
+		}else{
+			show_404();
+		}
+	}
+	public function tahunajaran(){
+		if($this->input->post("id_ta")!=NULL){
+			$this->db->update("tahunajaran",array("status"=>"Tidak_aktif"));
+			$this->db->where("id",$this->input->post("id_ta"));
+			$this->db->update("tahunajaran",array("status"=>"Aktif"));
+		}
+		if($this->input->post("id_tahapus")!=NULL){
+			$this->db->where("id",$this->input->post("id_tahapus"));
+			$this->db->delete("tahunajaran");
+		}
+		$data['title']="Tahun Ajaran";
+		$data['title2']="Tahun Ajaran";
+		$data['subtitle2']="";
+		$data['breadcumbparenticon']="fa fa-dashboard";
+		$data['breadcrumb']=array("Tahun Ajaran"=>"");
+		$data['logo']="SIA Pesantren";
+		$data['ta']=$this->Model_admin->get_ta();	
+		$data['content']=$this->load->view("page_admin/tahunajaran",$data,true);
+		$this->dashboard($data,"xxx!@#xxx");
+	}
+	function simpanta(){
+		if(sizeof($this->input->post())>0){
+			$datainput=array(
+				"tahun"=>$this->input->post('tahun'),
+				"periode"=>$this->input->post('periode')
+			);
+			$this->db->insert("tahunajaran",$datainput);
+			$row_change=$this->db->affected_rows();
+			if($row_change>0){
+				$this->session->set_flashdata("simpan",array("msg"=>"Data telah di tambahkan","status"=>true,"row_change"=>$row_change));	
+			}else{
+				$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
+			}
+			redirect("admin/tahunajaran");
+		}else{
+			show_404();
+		}
+	}
+	function logout(){
+		$this->session->sess_destroy();
+		redirect("login");
 	}
 	public function barang(){
 		$data['title']="Tambah Barang | Admin";

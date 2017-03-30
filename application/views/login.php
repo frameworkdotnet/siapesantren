@@ -41,7 +41,7 @@
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div> 
        <div class="form-group has-feedback">
-        <select class="form-control">
+        <select class="form-control" name="sebagai" required>
           <option value="">Masuk Sebagai</option>
           <option value="santri">Santri</option>
           <option value="admin">Administrator Pesantren</option>

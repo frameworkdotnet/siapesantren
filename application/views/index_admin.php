@@ -247,7 +247,7 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="<?php echo base_url(); ?>assets/upload/<?php  echo $this->session->userdata('username'); ?>/profile/<?php echo $this->session->userdata('foto'); ?>" onError="this.onerror=null;this.src='<?php echo base_url(); ?>assets/image/default-profile.png';" class="user-image" alt="User Image">
-              <span class="hidden-xs">Alexander Pierce</span>
+              <span class="hidden-xs"><?php echo substr($this->session->userdata("nama"), 0,15); ?></span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
@@ -255,7 +255,7 @@
                 <img src="<?php echo base_url(); ?>assets/upload/<?php  echo $this->session->userdata('username'); ?>/profile/<?php echo $this->session->userdata('foto'); ?>" onError="this.onerror=null;this.src='<?php echo base_url(); ?>assets/image/default-profile.png';" class="img-circle" alt="User Image">
 
                 <p>
-                  Alexander Pierce - Web Developer
+                  <?php echo substr($this->session->userdata("nama"), 0,15); ?> - <?php echo $this->session->userdata("role"); ?>
                   <small>Member since Nov. 2012</small>
                 </p>
               </li>
@@ -280,7 +280,7 @@
                   <a href="<?php echo base_url(); ?>admin/profile" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="<?php echo base_url(); ?>admin/logout" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -303,7 +303,7 @@
           <img src="<?php echo base_url(); ?>assets/upload/<?php  echo $this->session->userdata('username'); ?>/profile/<?php echo $this->session->userdata('foto'); ?>" onError="this.onerror=null;this.src='<?php echo base_url(); ?>assets/image/default-profile.png';" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>Alexander Pierce</p>
+          <p><?php echo substr($this->session->userdata("nama"), 0,15); ?></p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>
@@ -327,11 +327,16 @@
           </a>
         </li>
         <li>
-          <a href="<?php echo base_url(); ?>admin">
-            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+          <a href="<?php echo base_url(); ?>admin/penawaran">
+            <i class="fa fa-dashboard"></i> <span>Program Penawaran</span>
           </a>
         </li>
-        
+        <li>
+         <a href="<?php echo base_url(); ?>admin/tahunajaran">
+           <i class="fa fa-book"></i> <span>Tahun Ajaran</span>
+         </a>
+        </li>
+        <!--
         <li class="treeview">
           <a href="#">
             <i class="fa fa-th"></i>
@@ -345,6 +350,7 @@
             <li><a href="<?php echo base_url(); ?>admin/liststok"><i class="fa fa-circle-o"></i> Stok Barang</a></li>
           </ul>
         </li>
+
         <li class="treeview">
           <a href="#">
             <i class="fa fa-laptop"></i>
@@ -362,6 +368,7 @@
             <li><a href="pages/UI/modals.html"><i class="fa fa-circle-o"></i> Modals</a></li>
           </ul>
         </li>
+        
         <li class="treeview">
           <a href="#">
             <i class="fa fa-edit"></i> <span>Forms</span>
@@ -458,7 +465,8 @@
             <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
           </ul>
         </li>
-        <li><a href="documentation/index.html"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
+        -->
+        
         <li class="header">LABELS</li>
         <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
         <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
@@ -504,6 +512,21 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+  <div class="modal fade" id="showingmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
       <b>Version</b> 2.3.11
