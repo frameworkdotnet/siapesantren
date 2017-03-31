@@ -235,13 +235,34 @@ class Admin extends CI_Controller {
 	}
 	public function tahunajaran(){
 		if($this->input->post("id_ta")!=NULL){
-			$this->db->update("tahunajaran",array("status"=>"Tidak_aktif"));
-			$this->db->where("id",$this->input->post("id_ta"));
-			$this->db->update("tahunajaran",array("status"=>"Aktif"));
+			$this->db->trans_start();
+				$this->db->update("tahunajaran",array("status"=>"Tidak_aktif"));
+				$this->db->where("id",$this->input->post("id_ta"));
+				$this->db->update("tahunajaran",array("status"=>"Aktif"));
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE)
+			{
+				$row_change=0; 
+			}else{
+				$row_change=1;	
+			}
+			if($row_change>0){
+				$this->session->set_flashdata("simpan",array("msg"=>"Tahun ajaran telah diaktifkan","status"=>true,"row_change"=>$row_change));	
+			}else{
+				$this->session->set_flashdata("simpan",array("msg"=>"Tahun ajaran gagal diaktifkan","status"=>false,"row_change"=>$row_change));	
+			}
+			redirect("admin/tahunajaran");
 		}
 		if($this->input->post("id_tahapus")!=NULL){
 			$this->db->where("id",$this->input->post("id_tahapus"));
 			$this->db->delete("tahunajaran");
+			$row_change=$this->db->affected_rows();
+			if($row_change>0){
+				$this->session->set_flashdata("simpan",array("msg"=>"Tahun ajaran telah terhapus","status"=>true,"row_change"=>$row_change));	
+			}else{
+				$this->session->set_flashdata("simpan",array("msg"=>"Tahun ajaran gagal dihapus","status"=>false,"row_change"=>$row_change));	
+			}
+			redirect("admin/tahunajaran");
 		}
 		$data['title']="Tahun Ajaran";
 		$data['title2']="Tahun Ajaran";
@@ -270,6 +291,24 @@ class Admin extends CI_Controller {
 		}else{
 			show_404();
 		}
+	}
+	public function santri($role=NULL){
+		if($role=="view"){
+
+		}else{
+			$data['title']="Data Santri";
+			$data['title2']="Data Santri";
+			$data['subtitle2']="";
+			$data['breadcumbparenticon']="fa fa-dashboard";
+			$data['breadcrumb']=array("Data Santri"=>"");
+			$data['logo']="SIA Pesantren";
+			$data['ta']=$this->Model_admin->get_ta();	
+			$data['prov']=$this->Model_admin->get_prov();
+			$data['kabkot']=$this->Model_admin->get_kabkot();
+			$data['content']=$this->load->view("page_admin/santri",$data,true);
+			$this->dashboard($data,"xxx!@#xxx");	
+		}
+			
 	}
 	function logout(){
 		$this->session->sess_destroy();

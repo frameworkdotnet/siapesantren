@@ -85,7 +85,7 @@ legend {
                 <div class="panel-body">
                   <div class="col-md-12">
                     <div class="row">
-                     <table id="example1" class="table table-bordered table-striped">
+              <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th align="center" width="10%">No</th>
@@ -131,8 +131,6 @@ legend {
           <!-- /.nav-tabs-custom -->
         </div>
         <!-- /.col -->
-      </div>
-      <!-- /.row -->
       <script src="<?php echo base_url() ?>assets/plugins/input-mask/jquery.inputmask.js"></script>
       <script src="<?php echo base_url() ?>assets/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
       <script src="<?php echo base_url() ?>assets/plugins/input-mask/jquery.inputmask.extensions.js"></script>
@@ -233,7 +231,7 @@ legend {
     $("#showingmodal").modal("show");
    }
       </script>
-    <div id="edit">
+    <div id="edit" class="hide">
       <?php echo form_open("admin/penawaran"); ?>
       <input type="hidden" name="id_penawaranedit" id="id_penawaran">
       <label>Program Penawaran</label>
@@ -246,7 +244,7 @@ legend {
       </div>
       <?php echo form_close(); ?>
     </div>
-    <div id="hapusta">
+    <div id="hapusta" class="hide">
       <?php echo form_open("admin/penawaran"); ?>
       <input type="hidden" name="id_penawaranhapus" id="id_penawaran"><button class="btn btn-danger" type="submit">
       Hapus</button>

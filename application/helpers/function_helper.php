@@ -9,6 +9,14 @@ if ( ! function_exists('dumping'))
         echo "</pre>";
     }   
 }
+if ( ! function_exists('date_parse'))
+{
+    function date_parse($date)
+    {
+      $date=explode("/",$date);
+      return $date[2]."-".$date[1]."-".$date[0];
+    }   
+}
 if ( ! function_exists('todate'))
 {
     function todate($var = "",$noref=TRUE)

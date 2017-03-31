@@ -1,5 +1,5 @@
 /*
-SQLyog Professional v10.42 
+SQLyog Enterprise - MySQL GUI v8.18 
 MySQL - 5.6.17 : Database - siapesantren
 *********************************************************************
 */
@@ -9,8 +9,13 @@ MySQL - 5.6.17 : Database - siapesantren
 /*!40101 SET SQL_MODE=''*/;
 
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`siapesantren` /*!40100 DEFAULT CHARACTER SET latin1 */;
+
+USE `siapesantren`;
+
 /*Table structure for table `data_santri` */
 
 DROP TABLE IF EXISTS `data_santri`;
@@ -24,13 +29,14 @@ CREATE TABLE `data_santri` (
   `tgl_lhr` date DEFAULT NULL,
   `id_prov` tinyint(4) DEFAULT NULL,
   `id_kab` int(4) DEFAULT NULL,
-  `id_kec` int(7) DEFAULT NULL,
+  `kec` varchar(50) DEFAULT NULL,
   `desa` varchar(30) DEFAULT NULL,
   `rt_rw` varchar(7) DEFAULT NULL,
   `kodepos` varchar(10) DEFAULT NULL,
   `ket_alamat_lain` text,
   `agama` enum('Islam') DEFAULT 'Islam',
   `email` varchar(50) NOT NULL,
+  `nohp` varchar(20) DEFAULT NULL,
   `nama_ayah` varchar(30) DEFAULT NULL,
   `nama_ibu` varchar(30) DEFAULT NULL,
   `work_ayah` varchar(30) DEFAULT NULL,
@@ -43,7 +49,45 @@ CREATE TABLE `data_santri` (
 
 /*Data for the table `data_santri` */
 
-insert  into `data_santri`(`id`,`nis`,`nama`,`jenkel`,`tmp_lhr`,`tgl_lhr`,`id_prov`,`id_kab`,`id_kec`,`desa`,`rt_rw`,`kodepos`,`ket_alamat_lain`,`agama`,`email`,`nama_ayah`,`nama_ibu`,`work_ayah`,`work_ibu`,`hp_ortu`,`status_sistem`) values (1,'111111','Andy Resta','Pria','Tegal','1994-06-18',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Islam','restapradika@gmail.com',NULL,NULL,NULL,NULL,NULL,'Aktif');
+insert  into `data_santri`(`id`,`nis`,`nama`,`jenkel`,`tmp_lhr`,`tgl_lhr`,`id_prov`,`id_kab`,`kec`,`desa`,`rt_rw`,`kodepos`,`ket_alamat_lain`,`agama`,`email`,`nohp`,`nama_ayah`,`nama_ibu`,`work_ayah`,`work_ibu`,`hp_ortu`,`status_sistem`) values (1,'111111','Andy Resta','Pria','Tegal','1994-06-18',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Islam','restapradika@gmail.com',NULL,NULL,NULL,NULL,NULL,NULL,'Aktif');
+
+/*Table structure for table `loc_kabkot` */
+
+DROP TABLE IF EXISTS `loc_kabkot`;
+
+CREATE TABLE `loc_kabkot` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_provinsi` tinyint(4) DEFAULT NULL,
+  `kabkot` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `loc_kabkot` */
+
+/*Table structure for table `loc_kec` */
+
+DROP TABLE IF EXISTS `loc_kec`;
+
+CREATE TABLE `loc_kec` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `id_kabkot` int(7) DEFAULT NULL,
+  `kecamatan` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `loc_kec` */
+
+/*Table structure for table `loc_prov` */
+
+DROP TABLE IF EXISTS `loc_prov`;
+
+CREATE TABLE `loc_prov` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `provinsi` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `loc_prov` */
 
 /*Table structure for table `penawaran` */
 
@@ -57,7 +101,7 @@ CREATE TABLE `penawaran` (
 
 /*Data for the table `penawaran` */
 
-insert  into `penawaran`(`id`,`penawaran`) values (1,'Amtsilati');
+insert  into `penawaran`(`id`,`penawaran`) values (1,'Amtsilatis');
 
 /*Table structure for table `tahunajaran` */
 
@@ -85,13 +129,16 @@ CREATE TABLE `user` (
   `password` varchar(255) DEFAULT NULL,
   `sebagai` enum('admin','santri') DEFAULT NULL,
   `lastlogin` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_datasantri` (`nis`),
+  CONSTRAINT `user_datasantri` FOREIGN KEY (`nis`) REFERENCES `data_santri` (`nis`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 /*Data for the table `user` */
 
-insert  into `user`(`id`,`nis`,`password`,`sebagai`,`lastlogin`) values (1,'111111','40292cf66b17f2942d3e5560744c28d1a527f9c7','admin','2017-03-30 03:50:00');
+insert  into `user`(`id`,`nis`,`password`,`sebagai`,`lastlogin`) values (1,'111111','40292cf66b17f2942d3e5560744c28d1a527f9c7','admin','2017-03-31 05:55:30');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

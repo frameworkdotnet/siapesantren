@@ -155,15 +155,15 @@ legend {
           <!-- /.nav-tabs-custom -->
         </div>
         <!-- /.col -->
-      </div>
+      
       <!-- /.row -->
-      <div id="aktivasi">
+      <div id="aktivasi" class="hide">
       <?php echo form_open("admin/tahunajaran"); ?>
       <input type="hidden" name="id_ta" id="id_ta"><button class="btn btn-warning" type="submit">
       Aktifkan</button>
       <?php echo form_close(); ?>
       </div>
-      <div id="hapusta">
+      <div id="hapusta" class="hide">
       <?php echo form_open("admin/tahunajaran"); ?>
       <input type="hidden" name="id_tahapus" id="id_ta"><button class="btn btn-danger" type="submit">
       Aktifkan</button>

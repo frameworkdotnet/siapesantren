@@ -326,6 +326,19 @@
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
           </a>
         </li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-th"></i>
+            <span>Santri</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo base_url(); ?>admin/santri"><i class="fa fa-circle-o"></i> Tambah Santri</a></li>
+            <li><a href="<?php echo base_url(); ?>admin/santri/view"><i class="fa fa-circle-o"></i> Lihat Santri</a></li>
+          </ul>
+        </li>
         <li>
           <a href="<?php echo base_url(); ?>admin/penawaran">
             <i class="fa fa-dashboard"></i> <span>Program Penawaran</span>
