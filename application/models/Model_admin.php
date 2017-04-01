@@ -56,20 +56,20 @@ class Model_admin extends CI_Model {
                     return false;
                  }
     }
-    public function barang_exist_by_id($id_barang){
-        $this->db->where("id_barang",$id_barang);
-        $query=$this->db->get("barang");
+    public function santri_exist_by_id($id_barang){
+        $this->db->where("nis",$id_barang);
+        $query=$this->db->get("data_santri");
         if($query->num_rows()>0){
-            return $query;     
+            return false;     
         }else{
-            return false;
+            return true;
         }
     }
     public function get_prov($id_provinsi=NULL){
         if($id_provinsi!=NULL){
             $this->db->where("id",$id_provinsi);
         }
-        $query=$this->db->get("loc_prov");
+        $query=$this->db->get("provinces");
         return $query;
     }
     public function get_kabkot($id_provinsi=NULL,$self=FALSE){
@@ -77,10 +77,10 @@ class Model_admin extends CI_Model {
             if($self){
                 $this->db->where("id",$id_provinsi);
             }else{
-                $this->db->where("id_provinsi",$id_provinsi);    
+                $this->db->where("province_id",$id_provinsi);    
             }
         }
-        $query=$this->db->get("loc_kabkot");
+        $query=$this->db->get("regencies");
         return $query;
     }
     public function get_kec($id_kabkot=NULL,$self=FALSE){
@@ -88,10 +88,21 @@ class Model_admin extends CI_Model {
             if($self){
                 $this->db->where("id",$id_kabkot);
             }else{
-                $this->db->where("id_kabkot",$id_kabkot);    
+                $this->db->where("regency_id",$id_kabkot);    
             }
         }
-        $query=$this->db->get("loc_kec");
+        $query=$this->db->get("districts");
+        return $query;
+    }
+    public function get_desa($id_kec=NULL,$self=FALSE){
+        if($id_kec!=NULL){
+            if($self){
+                $this->db->where("id",$id_kec);
+            }else{
+                $this->db->where("district_id",$id_kec);    
+            }
+        }
+        $query=$this->db->get("villages");
         return $query;
     }
     public function get_toko_by_member($id_member){

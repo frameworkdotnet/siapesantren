@@ -420,6 +420,7 @@ $config['csrf_exclude_uris'] = array('admin/upload_image',
 	'admin/upload_image/1',
 	'admin/get_kabkot',
 	'admin/get_kec',
+	'admin/get_desa',
 	'admin/get_toko',
 	'admin/get_desc_toko',
 	'admin/get_kategori');

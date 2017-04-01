@@ -44,7 +44,9 @@ legend {
                     }
               ?>
         <div class="col-md-12">
-          <div class="nav-tabs-custom">
+        <div class="box box-info">
+        <div class="box-body">
+          <div class="nav-tabs-custom ">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#datapribadi" data-toggle="tab">Data Diri</a></li>
               <li><a href="#datatoko" data-toggle="tab">Alamat</a></li>
@@ -53,7 +55,7 @@ legend {
               <li><a href="#settings" data-toggle="tab">Settings</a></li>
               -->
             </ul>
-            <?php echo form_open("admin/simpanpenawaran",array("class"=>"panel-body","id"=>"formbio","onsubmit"=>"return validation_bio()")); ?>
+            <?php echo form_open("admin/santri/daftar",array("id"=>"formSantri","class"=>"panel-body","id"=>"formbio","onsubmit"=>"return validation_bio()")); ?>
             <div class="tab-content">
               <div class="active tab-pane" id="datapribadi">
               <div class="panel">              
@@ -105,7 +107,7 @@ legend {
                     <div class="input-group-addon">
                       <i class="fa fa-calendar"></i>
                     </div>
-                    <input type="text" id="datemasktgl" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                    <input type="text" id="datemasktgl" class="form-control" name="tgl_lhr" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
                     </div>
                   </div>
                   </fieldset>
@@ -123,13 +125,13 @@ legend {
                       <legend>Alamat</legend> 
                   <div class="form-group col-md-6">
                     <label>Provinsi</label>
-                    <select class="form-control" name="prov">
+                    <select class="form-control" name="prov" onchange="get_kabkot(event)">
                       <option value="">Pilih Provinsi</option>
                             <?php 
                               $prov=$prov->result();
                               foreach ($prov as $key) {
                                 ?>
-                                <option value="<?php echo $key->id; ?>"><?php echo $key->provinsi; ?></option>
+                                <option value="<?php echo $key->id; ?>"><?php echo $key->name; ?></option>
                                 <?php
                               }
                             ?>
@@ -137,26 +139,21 @@ legend {
                   </div>
                   <div class="form-group col-md-6">
                     <label>Kabupaten/Kota</label>
-                    <select class="form-control" name="kab">
+                    <select class="form-control" name="kabkot" onchange="get_kec(event)">
                       <option value="">Pilih Kabupaten/Kota</option>
-                            <?php    
-                              $kabkot=$this->Model_admin->get_kabkot($datamember->id_prov);
-                              $kabkot=$kabkot->result();
-                              foreach ($kabkot as $key) {
-                                ?>
-                                <option value="<?php echo $key->id; ?>"><?php echo $key->kabkot; ?></option>
-                                <?php
-                              }
-                            ?>
                     </select>
                   </div>
                   <div class="form-group col-md-6">
                     <label>Kecamatan</label>
-                    <input type="text" class="form-control filter-text" name="kec" placeholder="Kecamatan">
+                    <select class="form-control" name="kec" onchange="get_desa(event)">
+                      <option value="">Pilih Kecamatan</option>
+                    </select>
                   </div>
                   <div class="form-group col-md-6">
                     <label>Desa</label>
-                    <input type="text" class="form-control filter-text" name="desa" placeholder="Desa">
+                    <select class="form-control" name="desa">
+                      <option value="">Pilih Desa</option>
+                    </select>
                   </div>
                   <div class="form-group col-md-4">
                     <label>RT</label>
@@ -169,6 +166,11 @@ legend {
                   <div class="form-group col-md-4">
                     <label>Kodepos</label>
                     <input type="text" class="form-control filter-number" name="kodepos" placeholder="Kodepos">
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label>Keterangan Tambahan</label>
+                    <textarea class="form-control filter-text" name="ket_lain" placeholder="Misal : Nama Jalan, Nomor Rumah"></textarea>
+
                   </div>
                   </fieldset>
                     </div>
@@ -208,13 +210,22 @@ legend {
                 </div>
               </div>
               </div>
-              <?php echo form_close(); ?>
+
+             </div>
               <!-- /.tab-pane -->
             </div>
+            <div class="box-footer">
+              <button type="submit" class="btn btn-primary pull-right">Simpan</button>
+            </div>
+          </div>
             <!-- /.tab-content -->
+
           </div>
           <!-- /.nav-tabs-custom -->
+          
+              <?php echo form_close(); ?>
         </div>
+
         <!-- /.col -->
       <script src="<?php echo base_url() ?>assets/plugins/input-mask/jquery.inputmask.js"></script>
       <script src="<?php echo base_url() ?>assets/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
@@ -223,13 +234,9 @@ legend {
       function validation_bio(){
         return true;
       }
-      function simpanbio(){
-       var $myForm = $('#formbio');
-          if ($myForm[0].checkValidity()) {
-            $("#formbio").submit();
-          }else{
-            alert("form belum valid, pastikan sudah terisi semua");
-          }
+      function simpanformsantri(){
+       //var $myForm = $('#formSantri');
+        $("#formSantri").submit();
       }
       function get_rincian_toko(e){
         $("#content_toko").html("");
@@ -246,21 +253,33 @@ legend {
       function get_kabkot(e){
         $('select[name="kabkot"]').html("Waiting...");
         $('select[name="kec"]').html("<option value=''>Pilih Kecamatan</option>");
+        $('select[name="desa"]').html("<option value=''>Pilih Desa</option>");
         $.post("<?php echo base_url(); ?>admin/get_kabkot",{id_prov:$(e.target).val()},function(data){
           $('select[name="kabkot"]').html("<option value=''>Pilih Kabupaten/Kota</option>");
           var item=JSON.parse(data);
           for(var i=0;i<item.length;i++){
-            $('select[name="kabkot"]').append("<option value='"+item[i].id+"'>"+item[i].kabkot+"</option>");
+            $('select[name="kabkot"]').append("<option value='"+item[i].id+"'>"+item[i].name+"</option>");
           }
         });
       }
       function get_kec(e){
         $('select[name="kec"]').html("Waiting...");
+        $('select[name="desa"]').html("<option value=''>Pilih Desa</option>");
         $.post("<?php echo base_url(); ?>admin/get_kec",{id_kabkot:$(e.target).val()},function(data){
           $('select[name="kec"]').html("<option value=''>Pilih Kecamatan</option>");
           var item=JSON.parse(data);
           for(var i=0;i<item.length;i++){
-            $('select[name="kec"]').append("<option value='"+item[i].id+"'>"+item[i].kecamatan+"</option>");
+            $('select[name="kec"]').append("<option value='"+item[i].id+"'>"+item[i].name+"</option>");
+          }
+        });
+      }
+      function get_desa(e){
+        $('select[name="desa"]').html("Waiting...");
+        $.post("<?php echo base_url(); ?>admin/get_desa",{id_kec:$(e.target).val()},function(data){
+          $('select[name="desa"]').html("<option value=''>Pilih Desa</option>");
+          var item=JSON.parse(data);
+          for(var i=0;i<item.length;i++){
+            $('select[name="desa"]').append("<option value='"+item[i].id+"'>"+item[i].name+"</option>");
           }
         });
       }
