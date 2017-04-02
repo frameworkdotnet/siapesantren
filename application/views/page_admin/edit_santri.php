@@ -42,6 +42,7 @@ legend {
               </div>
                       <?php
                     }
+
               ?>
         <div class="col-md-12">
         <div class="box box-info">
@@ -55,7 +56,7 @@ legend {
               <li><a href="#settings" data-toggle="tab">Settings</a></li>
               -->
             </ul>
-            <?php echo form_open("admin/santri/daftar",array("id"=>"formSantri","class"=>"panel-body","id"=>"formbio","onsubmit"=>"return validation_bio()")); ?>
+            <?php echo form_open("admin/santri/editaction",array("id"=>"formSantri","class"=>"panel-body","id"=>"formbio","onsubmit"=>"return validation_bio()")); ?>
             <div class="tab-content">
               <div class="active tab-pane" id="datapribadi">
               <div class="panel">              
@@ -65,17 +66,17 @@ legend {
                       <legend>Data Diri</legend> 
                   <div class="form-group col-md-8">
                     <label>NIS</label>
-                    <input type="text" class="form-control filter-number" name="nis" placeholder="Nomor Induk Santri" required>
+                    <input type="text" readonly value="<?php echo $santri->nis; ?>" class="form-control filter-number" name="nis" placeholder="Nomor Induk Santri" required>
                   </div>
                   <div class="form-group col-md-8">
                     <label>Nama Santri</label>
-                    <input type="text" class="form-control filter-text" name="nama" placeholder="Nama Santri" required>
+                    <input type="text" class="form-control filter-text" name="nama" value="<?php echo $santri->nama; ?>" placeholder="Nama Santri" required>
                   </div>
                   <div class="form-group col-md-8">
                     <label>Jenis Kelamin</label>
                     <select class="form-control" name="jenkel">
-                      <option value="Pria">Laki-laki</option>
-                      <option value="Wanita">Perempuan</option>
+                      <option value="Pria" <?php echo $santri->jenkel=="Pria"?'selected':''; ?>>Laki-laki</option>
+                      <option value="Wanita" <?php echo $santri->jenkel=="Wanita"?'selected':''; ?>>Perempuan</option>
                     </select>
                   </div>
                   <div class="form-group col-md-8">
@@ -86,20 +87,21 @@ legend {
                   </div>
                   <div class="form-group col-md-6">
                     <label>Email</label>
-                    <input type="email" class="form-control" name="email" placeholder="Email">
+                    <input type="email" value="<?php echo $santri->email; ?>" class="form-control" name="email" placeholder="Email">
                   </div>
+
                   <div class="form-group col-md-6">
                     <label>No Hp</label>
                     <div class="input-group">
                     <div class="input-group-addon">
                       <i class="fa fa-phone"></i>
                     </div>
-                    <input type="text" class="form-control" id="datemasktlp" name="no_hp" data-inputmask="'mask': ['999-999-999-999', '+6299-999-999-999']" data-mask>
+                    <input type="text" value="<?php echo $santri->nohp; ?>" class="form-control" id="datemasktlp" name="no_hp" data-inputmask="'mask': ['999-999-999-999', '+6299-999-999-999']" data-mask>
                     </div>
                   </div>
                   <div class="form-group col-md-6">
                     <label>Tempat Lahir</label>
-                    <input type="text" class="form-control filter-text" name="tmp_lhr" placeholder="Kota Lahir">
+                    <input type="text" value="<?php echo $santri->tmp_lhr; ?>" class="form-control filter-text" name="tmp_lhr" placeholder="Kota Lahir">
                   </div>
                   <div class="form-group col-md-6">
                     <label>Tanggal Lahir</label>
@@ -107,7 +109,7 @@ legend {
                     <div class="input-group-addon">
                       <i class="fa fa-calendar"></i>
                     </div>
-                    <input type="text" id="datemasktgl" class="form-control" name="tgl_lhr" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                    <input type="text" id="datemasktgl" value="<?php echo todate($santri->tgl_lhr,false); ?>" class="form-control" name="tgl_lhr" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
                     </div>
                   </div>
                   </fieldset>
@@ -127,11 +129,11 @@ legend {
                     <label>Provinsi</label>
                     <select class="form-control" name="prov" onchange="get_kabkot(event)">
                       <option value="">Pilih Provinsi</option>
-                            <?php 
+                            <?php
                               $prov=$prov->result();
                               foreach ($prov as $key) {
                                 ?>
-                                <option value="<?php echo $key->id; ?>"><?php echo $key->name; ?></option>
+                                <option value="<?php echo $key->id; ?>" <?php echo $key->id==$santri->id_prov?'selected':''; ?>><?php echo $key->name; ?></option>
                                 <?php
                               }
                             ?>
@@ -139,37 +141,58 @@ legend {
                   </div>
                   <div class="form-group col-md-6">
                     <label>Kabupaten/Kota</label>
-                    <select class="form-control" name="kabkot" onchange="get_kec(event)">
+                    <select class="form-control" name="kab" onchange="get_kec(event)">
                       <option value="">Pilih Kabupaten/Kota</option>
+                      <?php 
+                              $kab=$kab->result();
+                              foreach ($kab as $key) {
+                                ?>
+                                <option value="<?php echo $key->id; ?>" <?php echo $key->id==$santri->id_kab?'selected':''; ?>><?php echo $key->name; ?></option>
+                                <?php
+                              }
+                            ?>
                     </select>
                   </div>
                   <div class="form-group col-md-6">
                     <label>Kecamatan</label>
                     <select class="form-control" name="kec" onchange="get_desa(event)">
                       <option value="">Pilih Kecamatan</option>
+                      <?php 
+                              $kec=$kec->result();
+                              foreach ($kec as $key) {
+                                ?>
+                                <option value="<?php echo $key->id; ?>" <?php echo $key->id==$santri->id_kec?'selected':''; ?>><?php echo $key->name; ?></option>
+                                <?php
+                              }
+
+                            ?>
                     </select>
                   </div>
                   <div class="form-group col-md-6">
                     <label>Desa</label>
                     <select class="form-control" name="desa">
                       <option value="">Pilih Desa</option>
+                      <?php 
+                              $desa=$desa->result();
+                              foreach ($desa as $key) {
+                                ?>
+                                <option value="<?php echo $key->id; ?>" <?php echo $key->id==$santri->id_desa?'selected':''; ?>><?php echo $key->name; ?></option>
+                                <?php
+                              }
+                            ?>
                     </select>
                   </div>
-                  <div class="form-group col-md-4">
-                    <label>RT</label>
-                    <input type="text" class="form-control filter-number" name="rt" placeholder="RT">
+                  <div class="form-group col-md-6">
+                    <label>RT/RW</label>
+                    <input type="text" id="rtrw" data-inputmask="'alias': '999/999'" data-mask class="form-control filter-number" value="<?php echo $santri->rt_rw; ?>" name="rt_rw">
                   </div>
-                  <div class="form-group col-md-4">
-                    <label>RW</label>
-                    <input type="text" class="form-control filter-number" name="rw" placeholder="RW">
-                  </div>
-                  <div class="form-group col-md-4">
+                  <div class="form-group col-md-6">
                     <label>Kodepos</label>
-                    <input type="text" class="form-control filter-number" name="kodepos" placeholder="Kodepos">
+                    <input type="text" class="form-control filter-number" name="kodepos" value="<?php echo $santri->kodepos; ?>" placeholder="Kodepos">
                   </div>
                   <div class="form-group col-md-12">
                     <label>Keterangan Tambahan</label>
-                    <textarea class="form-control filter-text" name="ket_lain" placeholder="Misal : Nama Jalan, Nomor Rumah"></textarea>
+                    <textarea class="form-control filter-text" name="ket_lain" value="<?php echo $santri->ket_alamat_lain; ?>" placeholder="Misal : Nama Jalan, Nomor Rumah"></textarea>
 
                   </div>
                   </fieldset>
@@ -186,19 +209,19 @@ legend {
                   
                   <div class="form-group col-md-6">
                     <label>Nama Ayah</label>
-                    <input type="text" class="form-control filter-text" name="namaayah" placeholder="Nama Ayah">
+                    <input type="text" class="form-control filter-text" value="<?php echo $santri->nama_ayah; ?>" name="namaayah" placeholder="Nama Ayah">
                   </div>
                   <div class="form-group col-md-6">
                     <label>Nama Ibu</label>
-                    <input type="text" class="form-control filter-text" name="namaibu" placeholder="Nama Ibu">
+                    <input type="text" class="form-control filter-text" value="<?php echo $santri->nama_ibu; ?>" name="namaibu" placeholder="Nama Ibu">
                   </div>
                   <div class="form-group col-md-6">
                     <label>Pekerjaan Ayah</label>
-                    <input type="text" class="form-control filter-text" name="workayah" placeholder="Pekerjaan Ayah">
+                    <input type="text" class="form-control filter-text" value="<?php echo $santri->work_ayah; ?>" name="workayah" placeholder="Pekerjaan Ayah">
                   </div>
                   <div class="form-group col-md-6">
                     <label>Pekerjaan Ibu</label>
-                    <input type="text" class="form-control filter-text" name="workibu" placeholder="Pekerjaan Ibu">
+                    <input type="text" class="form-control filter-text" value="<?php echo $santri->work_ibu; ?>" name="workibu" placeholder="Pekerjaan Ibu">
                   </div>
                   <div class="form-group col-md-6">
                     <label>No Hp Ortu</label>
@@ -206,7 +229,7 @@ legend {
                     <div class="input-group-addon">
                       <i class="fa fa-phone"></i>
                     </div>
-                    <input type="text" id="hportu" class="form-control filter-text" name="hportu" data-inputmask="'mask': ['999-999-999-999', '+6299-999-999-999']" data-mask>
+                    <input type="text" id="hportu" class="form-control filter-text" value="<?php echo $santri->hp_ortu; ?>" name="hportu" data-inputmask="'mask': ['999-999-999-999', '+6299-999-999-999']" data-mask>
                     </div>
                   </div>
                   </fieldset>
@@ -256,14 +279,14 @@ legend {
         });
       }
       function get_kabkot(e){
-        $('select[name="kabkot"]').html("Waiting...");
+        $('select[name="kab"]').html("Waiting...");
         $('select[name="kec"]').html("<option value=''>Pilih Kecamatan</option>");
         $('select[name="desa"]').html("<option value=''>Pilih Desa</option>");
         $.post("<?php echo base_url(); ?>admin/get_kabkot",{id_prov:$(e.target).val()},function(data){
-          $('select[name="kabkot"]').html("<option value=''>Pilih Kabupaten/Kota</option>");
+          $('select[name="kab"]').html("<option value=''>Pilih Kabupaten/Kota</option>");
           var item=JSON.parse(data);
           for(var i=0;i<item.length;i++){
-            $('select[name="kabkot"]').append("<option value='"+item[i].id+"'>"+item[i].name+"</option>");
+            $('select[name="kab"]').append("<option value='"+item[i].id+"'>"+item[i].name+"</option>");
           }
         });
       }
@@ -315,6 +338,7 @@ legend {
             }
          });
          $("#datemasktgl").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
+         $("#rtrw").inputmask("999/999", {"placeholder": "RT /RW "});
          $("#datemasktlp").inputmask();
          $("#hportu").inputmask();
    });

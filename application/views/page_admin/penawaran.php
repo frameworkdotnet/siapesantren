@@ -23,27 +23,8 @@ legend {
 
 </style>
 <div class="row">
- 
         <div class="col-md-12">
-          <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#datapribadi" data-toggle="tab">Input Data</a></li>
-              <li><a href="#datatoko" data-toggle="tab">Data Masuk</a></li>
-              <!--
-              <li><a href="#datatoko" data-toggle="tab">Data Toko</a></li>
-              <li><a href="#settings" data-toggle="tab">Settings</a></li>
-              -->
-            </ul>
-            <div class="tab-content">
-              <div class="active tab-pane" id="datapribadi">
-              <div class="panel">
-              <?php echo form_open("admin/simpanpenawaran",array("class"=>"panel-body","id"=>"formbio","onsubmit"=>"return validation_bio()"));   
-              ?>
-                <div class="col-md-12">
-                    <div class="row">
-                      <fieldset>
-                      <legend>Form Program Penawaran</legend>
-              <?php    
+          <?php    
                   if($this->session->flashdata("simpan")['status']==true && $this->session->flashdata("simpan")!=NULL){
                       ?>
               <div class="alert alert-success alert-dismissible">
@@ -62,6 +43,27 @@ legend {
                       <?php
                     }
               ?>        
+              
+          <div class="nav-tabs-custom">
+            
+            <ul class="nav nav-tabs">
+              
+              <li class="active"><a href="#datapribadi" data-toggle="tab">Input Data</a></li>
+              <li><a href="#datatoko" data-toggle="tab">Data Masuk</a></li>
+          
+            </ul>
+            <div class="tab-content">
+              <?php  
+                if($role=="penawaran"){
+              ?>
+              <div class="active tab-pane" id="datapribadi">
+              <div class="panel">
+              <?php echo form_open("admin/penawaran/simpanpenawaran",array("class"=>"panel-body","id"=>"formbio","onsubmit"=>"return validation_bio()"));   
+              ?>
+                <div class="col-md-12">
+                    <div class="row">
+                      <fieldset>
+                      <legend>Form Program Penawaran</legend>
               
                   <div class="form-group col-md-6">
                     <label>Nama Program Penawaran</label>
@@ -118,11 +120,68 @@ legend {
                   </div>
                   </div>
                 </div>
-                <!--
-              <div class="tab-pane" id="settings">
-                asdasd
-              </div>
-              -->
+                <?php
+                }else if($role=="mapel"){
+                  ?>
+                  <div class="active tab-pane" id="datapribadi">
+                    <div class="panel">
+            <?php echo form_open("admin/penawaran/simpanmapel",array("class"=>"panel-body","id"=>""));   
+              ?>
+                  <div class="col-md-12">
+                      <div class="row">
+                        <fieldset>
+                        <legend>Form Mapel Program Penawaran</legend>    
+                   <div class="col-md-6"> 
+                    <div class="form-group">
+                      <label>Program Penawaran</label>
+                      <select class="form-control" name="id_penawaran">
+                        <option value="">Pilih Program Penawaran</option>
+                        <?php  
+                          $penawaran=$penawaran->result();
+                          foreach ($penawaran as $key) {
+                            ?>
+                            <option value="<?php echo $key->id; ?>"><?php echo $key->penawaran; ?></option>
+                            <?php
+                          }
+                        ?>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <button type="button" onclick="plus_mapel(event)" class="btn btn-warning btn-sm">Tambah Mapel</button>
+                    </div>
+                    <div id="mapelplus">
+
+                    </div>
+                   </div> 
+                    <div class="form-group col-md-12">
+                      <button type="button" onclick="simpanbio()" class="btn btn-primary">Simpan</button>
+                    </div>
+                   
+                    </fieldset>
+                      </div>
+                    </div>
+                  <script type="text/javascript">
+                  var x=1;
+                  function plus_mapel(){
+                    $("#mapelplus").append('<div class="form-group">'+
+                    '<label>Nama Mapel Penawaran '+x+'</label>'+
+                    '<input type="text" class="form-control filter-text" name="mapel_penawaran[]" placeholder="Nama mapel" required>'+
+                  '</div>');
+                    x++;
+                  }
+                  </script>
+                <?php echo form_close(); ?>
+                    </div>
+                  </div>
+                  <div class="active tab-pane" id="datatoko">
+                    <div class="panel">
+                    
+                    </div>
+                  </div>
+                  <?php
+                } 
+                ?>
+              
               </div>
               <!-- /.tab-pane -->
             </div>
@@ -145,39 +204,6 @@ legend {
           }else{
             alert("form belum valid, pastikan sudah terisi semua");
           }
-      }
-      function get_rincian_toko(e){
-        $("#content_toko").html("");
-        $.post("<?php echo base_url(); ?>admin/get_toko",{id_toko:$(e.target).val()},function(data){
-         $("#content_toko").html(data);
-        });
-        $.post("<?php echo base_url(); ?>admin/get_desc_toko",{id_toko:$(e.target).val()},function(data){
-         var jsondata=JSON.parse(data);
-         $("#desc_toko .box-title").html("Preview "+jsondata.nama_toko);
-         $("#desc_toko .desc").html(jsondata.deskripsi_toko);
-         $("#desc_toko .area").html(jsondata.provinsi+", "+jsondata.kabkot);
-        });
-      }
-      function get_kabkot(e){
-        $('select[name="kabkot"]').html("Waiting...");
-        $('select[name="kec"]').html("<option value=''>Pilih Kecamatan</option>");
-        $.post("<?php echo base_url(); ?>admin/get_kabkot",{id_prov:$(e.target).val()},function(data){
-          $('select[name="kabkot"]').html("<option value=''>Pilih Kabupaten/Kota</option>");
-          var item=JSON.parse(data);
-          for(var i=0;i<item.length;i++){
-            $('select[name="kabkot"]').append("<option value='"+item[i].id+"'>"+item[i].kabkot+"</option>");
-          }
-        });
-      }
-      function get_kec(e){
-        $('select[name="kec"]').html("Waiting...");
-        $.post("<?php echo base_url(); ?>admin/get_kec",{id_kabkot:$(e.target).val()},function(data){
-          $('select[name="kec"]').html("<option value=''>Pilih Kecamatan</option>");
-          var item=JSON.parse(data);
-          for(var i=0;i<item.length;i++){
-            $('select[name="kec"]').append("<option value='"+item[i].id+"'>"+item[i].kecamatan+"</option>");
-          }
-        });
       }
         $(document).ready(function(){
          

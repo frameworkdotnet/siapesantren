@@ -207,42 +207,58 @@ class Admin extends CI_Controller {
 		
 		$this->dashboard($data,"xxx!@#xxx");
 	}
-	public function penawaran(){
+	public function penawaran($role=NULL){
 		if($this->input->post("id_penawaranedit")!=NULL){
 			$this->db->where("id",$this->input->post("id_penawaranedit"));
 			$this->db->update("penawaran",array("penawaran"=>$this->input->post("penawaran")));
+			redirect("admin/penawaran");
 		}
 		if($this->input->post("id_penawaranhapus")!=NULL){
 			$this->db->where("id",$this->input->post("id_penawaranhapus"));
 			$this->db->delete("penawaran");
-		}
-		$data['title']="Program Penawaran";
-		$data['title2']="Program Penawaran ";
-		$data['subtitle2']="";
-		$data['breadcumbparenticon']="fa fa-dashboard";
-		$data['breadcrumb']=array("Program Penawaran"=>"");
-		$data['logo']="Toko Online";
-		$data['penawaran']=$this->Model_admin->get_penawaran();	
-		$data['content']=$this->load->view("page_admin/penawaran",$data,true);
-		$this->dashboard($data,"xxx!@#xxx");
-	}
-	function simpanpenawaran(){
-		if(sizeof($this->input->post())>0){
-			$datainput=array(
-				"penawaran"=>$this->input->post('nama_penawaran')
-			);
-			$this->db->insert("penawaran",$datainput);
-			$row_change=$this->db->affected_rows();
-			if($row_change>=0){
-				$this->session->set_flashdata("simpan",array("msg"=>"Data telah di tambahkan","status"=>true,"row_change"=>$row_change));	
-			}else{
-				$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
-			}
 			redirect("admin/penawaran");
+		}
+		if($role=="mapel"){
+			$data['role']="mapel";
+			$data['title']="Mapel Program Penawaran";
+			$data['title2']="Mapel Program Penawaran ";
+			$data['subtitle2']="";
+			$data['breadcumbparenticon']="fa fa-dashboard";
+			$data['breadcrumb']=array("Program Penawaran"=>"");
+			$data['logo']="Toko Online";
+			$data['penawaran']=$this->Model_admin->get_penawaran();	
+			$data['content']=$this->load->view("page_admin/penawaran",$data,true);
+			$this->dashboard($data,"xxx!@#xxx");
+		}else if($role=="simpanpenawaran"){
+			if(sizeof($this->input->post())>0){
+				$datainput=array(
+					"penawaran"=>$this->input->post('nama_penawaran')
+				);
+				$this->db->insert("penawaran",$datainput);
+				$row_change=$this->db->affected_rows();
+				if($row_change>=0){
+					$this->session->set_flashdata("simpan",array("msg"=>"Data telah di tambahkan","status"=>true,"row_change"=>$row_change));	
+				}else{
+					$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
+				}
+				redirect("admin/penawaran");
+			}else{
+				show_404();
+			}
 		}else{
-			show_404();
+			$data['role']="penawaran";
+			$data['title']="Program Penawaran";
+			$data['title2']="Program Penawaran ";
+			$data['subtitle2']="";
+			$data['breadcumbparenticon']="fa fa-dashboard";
+			$data['breadcrumb']=array("Program Penawaran"=>"");
+			$data['logo']="Toko Online";
+			$data['penawaran']=$this->Model_admin->get_penawaran();	
+			$data['content']=$this->load->view("page_admin/penawaran",$data,true);
+			$this->dashboard($data,"xxx!@#xxx");	
 		}
 	}
+
 	public function tahunajaran(){
 		if($this->input->post("id_ta")!=NULL){
 			$this->db->trans_start();
@@ -302,54 +318,176 @@ class Admin extends CI_Controller {
 			show_404();
 		}
 	}
-	public function santri($role=NULL){
+	public function santri($role=NULL,$nis=NULL){
 		if($role=="view"){
-
-		}else if($role=="daftar"){
-			if($this->Model_admin->santri_exist_by_id($this->input->post('nis'))){
-			$datainput=array(
-				'nis'=>$this->input->post('nis'),
-			    'nama'=>$this->input->post('nama'),
-			    'jenkel'=>$this->input->post('jenkel'),
-			    'agama'=>$this->input->post('agama'),
-			    'email'=>$this->input->post('email'),
-			    'nohp'=>$this->input->post('no_hp'), 
-			    'tmp_lhr'=>$this->input->post('tmp_lhr'), 
-			    'tgl_lhr'=>$this->input->post('tgl_lhr'),
-			    'id_prov'=>$this->input->post('prov']), 
-			    'id_kabkot'=>$this->input->post('kabkot'), 
-			    'id_kec'=>$this->input->post('kec'), 
-			    'id_desa'=>$this->input->post('desa'), 
-			    'rt'=>$this->input->post('rt'), 
-			    'rw'=>$this->input->post('rw'),
-			    'kodepos'=>$this->input->post('kodepos'), 
-			    'ket_alamat_lain'=>$this->input->post('ket_lain'), 
-			    'nama_ayah'=>$this->input->post('namaayah'), 
-			    'nama_ibu'=>$this->input->post('namaibu'), 
-			    'work_ayah'=>$this->input->post('workayah'), 
-			    'work_ibu'=>$this->input->post('workibu'), 
-			    'hp_ortu'=>$this->input->post('hportu')
-    		);
-    		$this->db->insert("data_santri",$datainput);
-    		$row_change=$this->db->affected_rows();
-			if($row_change>=0){
-				$this->session->set_flashdata("simpan",array("msg"=>"Data telah di tambahkan","status"=>true,"row_change"=>$row_change));	
-			}else{
-				$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
-			}
-		}else{
-			$this->session->set_flashdata("simpan",array("msg"=>"Nis Sudah Terdaftar","status"=>false,"row_change"=>$row_change));	
-		}
-			redirect("admin/santri");
-
-		}else{
-			$data['title']="Data Santri";
-			$data['title2']="Data Santri";
+			$data['title']="Daftar Santri";
+			$data['title2']="Daftar Santri";
 			$data['subtitle2']="";
 			$data['breadcumbparenticon']="fa fa-dashboard";
 			$data['breadcrumb']=array("Data Santri"=>"");
 			$data['logo']="SIA Pesantren";
-			$data['ta']=$this->Model_admin->get_ta();	
+			$santri=$this->Model_admin->get_santri();
+			$this->load->library('pagination');
+			$config['base_url'] = base_url()."admin/santri/view/";
+			$config['full_tag_open'] = '<ul class="pagination">';
+	        $config['full_tag_close'] = '</ul>';
+	        $config['first_link'] = false;
+	        $config['last_link'] = false;
+	        $config['first_tag_open'] = '<li>';
+	        $config['first_tag_close'] = '</li>';
+	        $config['prev_link'] = '&laquo';
+	        $config['prev_tag_open'] = '<li class="prev">';
+	        $config['prev_tag_close'] = '</li>';
+	        $config['next_link'] = '&raquo';
+	        $config['next_tag_open'] = '<li>';
+	        $config['next_tag_close'] = '</li>';
+	        $config['last_tag_open'] = '<li>';
+	        $config['last_tag_close'] = '</li>';
+	        $config['cur_tag_open'] = '<li class="active"><a href="#">';
+	        $config['cur_tag_close'] = '</a></li>';
+	        $config['num_tag_open'] = '<li>';
+	        $config['num_tag_close'] = '</li>';
+			$config['total_rows'] = $santri->num_rows();
+			$config['per_page'] = 500;
+			$this->pagination->initialize($config);
+			$data['pagination']=$this->pagination->create_links();
+			$nis=$nis==NULL?0:$nis;
+			$data['santri']=$this->Model_admin->get_santri(NULL,$nis,500);
+			$data['content']=$this->load->view("page_admin/view_santri",$data,true);
+			$this->dashboard($data,"xxx!@#xxx");
+		}else if($role=="edit"){
+			$nis=$this->urlenkripsi->decode_url($nis);
+			$santri=$this->Model_admin->get_santri($nis);
+			$santri=$santri->row();
+			if(isset($santri)){
+				$data['title']="Edit Data Santri";
+				$data['title2']="Edit Data Santri";
+				$data['subtitle2']="";
+				$data['breadcumbparenticon']="fa fa-dashboard";
+				$data['breadcrumb']=array("Data Santri"=>"");
+				$data['logo']="SIA Pesantren";	
+				$data['prov']=$this->Model_admin->get_prov();
+				$data['kab']=$this->Model_admin->get_kabkot($santri->id_prov);
+				$data['kec']=$this->Model_admin->get_kec($santri->id_kab);
+				$data['desa']=$this->Model_admin->get_desa($santri->id_kec);
+				$data['santri']=$santri;
+				$data['content']=$this->load->view("page_admin/edit_santri",$data,true);
+				$this->dashboard($data,"xxx!@#xxx");
+			}else{
+				redirect("admin/santri");
+			}
+		}else if($role=="editaction"){
+			if(sizeof($this->input->post())>0){
+				$datainput=array(
+						'nis'=>$this->input->post('nis'),
+					    'nama'=>$this->input->post('nama'),
+					    'jenkel'=>$this->input->post('jenkel'),
+					    'agama'=>$this->input->post('agama'),
+					    'email'=>$this->input->post('email'),
+					    'nohp'=>$this->input->post('no_hp'), 
+					    'tmp_lhr'=>$this->input->post('tmp_lhr'), 
+					    'tgl_lhr'=>todate($this->input->post('tgl_lhr')),
+					    'id_prov'=>$this->input->post('prov'), 
+					    'id_kab'=>$this->input->post('kab'), 
+					    'id_kec'=>$this->input->post('kec'), 
+					    'id_desa'=>$this->input->post('desa'), 
+					    'rt_rw'=>$this->input->post('rt_rw'), 
+					    'kodepos'=>$this->input->post('kodepos'), 
+					    'ket_alamat_lain'=>$this->input->post('ket_lain'), 
+					    'nama_ayah'=>$this->input->post('namaayah'), 
+					    'nama_ibu'=>$this->input->post('namaibu'), 
+					    'work_ayah'=>$this->input->post('workayah'), 
+					    'work_ibu'=>$this->input->post('workibu'), 
+					    'hp_ortu'=>$this->input->post('hportu')
+		    		);
+				$this->db->where("nis",$datainput['nis']);
+				$this->db->update("data_santri",$datainput);
+				$row_change=$this->db->affected_rows();
+				if($row_change>=0){
+					$this->session->set_flashdata("simpan",array("msg"=>"Data telah di ganti","status"=>true,"row_change"=>$row_change));	
+				}else{
+					$this->session->set_flashdata("simpan",array("msg"=>"Tidak ada perubahan","status"=>true,"row_change"=>$row_change));	
+				}
+				redirect("admin/santri/edit/".$this->urlenkripsi->encode_url($datainput['nis']));
+			}else{
+				redirect("admin/santri");
+			}
+		}else if($role=="hapus"){
+			$nis=$this->urlenkripsi->decode_url($nis);
+			$santri=$this->Model_admin->get_santri($nis);
+			$santri=$santri->row();
+			if(isset($santri)){
+				$data['title']="Hapus Data Santri";
+				$data['title2']="Hapus Data Santri";
+				$data['subtitle2']="";
+				$data['breadcumbparenticon']="fa fa-dashboard";
+				$data['breadcrumb']=array("Data Santri"=>"");
+				$data['logo']="SIA Pesantren";
+				$data['santri']=$santri;
+				$data['sethapus']=true;
+				$data['content']=$this->load->view("page_admin/view_santri",$data,true);
+				$this->dashboard($data,"xxx!@#xxx");
+			}else{
+				redirect("admin/santri/view/");
+			}	
+		}else if($role=="hapusaction"){
+			if(sizeof($this->input->post())>0){
+				$this->db->where("nis",$this->input->post("nis"));
+				$this->db->delete("data_santri");
+				$row_change=$this->db->affected_rows();
+				if($row_change>0){
+					$this->session->set_flashdata("simpan",array("msg"=>"Data telah di terhapus","status"=>true,"row_change"=>$row_change));	
+				}else{
+					$this->session->set_flashdata("simpan",array("msg"=>"Gagal menghapus data","status"=>false,"row_change"=>$row_change));	
+				}
+				redirect("admin/santri/view/");
+			}else{
+				show_404();
+			}
+		}else if($role=="daftar"){
+			if(sizeof($this->input->post())>0){
+				if($this->Model_admin->santri_exist_by_id($this->input->post('nis'))){
+					$datainput=array(
+						'nis'=>$this->input->post('nis'),
+					    'nama'=>$this->input->post('nama'),
+					    'jenkel'=>$this->input->post('jenkel'),
+					    'agama'=>$this->input->post('agama'),
+					    'email'=>$this->input->post('email'),
+					    'nohp'=>$this->input->post('no_hp'), 
+					    'tmp_lhr'=>$this->input->post('tmp_lhr'), 
+					    'tgl_lhr'=>date_parse($this->input->post('tgl_lhr')),
+					    'id_prov'=>$this->input->post('prov'), 
+					    'id_kabkot'=>$this->input->post('kabkot'), 
+					    'id_kec'=>$this->input->post('kec'), 
+					    'id_desa'=>$this->input->post('desa'), 
+					    'rt_rw'=>$this->input->post('rt_rw'), 
+					    'kodepos'=>$this->input->post('kodepos'), 
+					    'ket_alamat_lain'=>$this->input->post('ket_lain'), 
+					    'nama_ayah'=>$this->input->post('namaayah'), 
+					    'nama_ibu'=>$this->input->post('namaibu'), 
+					    'work_ayah'=>$this->input->post('workayah'), 
+					    'work_ibu'=>$this->input->post('workibu'), 
+					    'hp_ortu'=>$this->input->post('hportu')
+		    		);
+		    		$this->db->insert("data_santri",$datainput);
+		    		$row_change=$this->db->affected_rows();
+					if($row_change>=0){
+						$this->session->set_flashdata("simpan",array("msg"=>"Data telah di tambahkan","status"=>true,"row_change"=>$row_change));	
+					}else{
+						$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
+					}
+				}else{
+					$this->session->set_flashdata("simpan",array("msg"=>"Nis Sudah Terdaftar","status"=>false,"row_change"=>$row_change));	
+				}
+			}
+			redirect("admin/santri");
+		}else{
+			$data['title']="Tambah Data Santri";
+			$data['title2']="Tambah Data Santri";
+			$data['subtitle2']="";
+			$data['breadcumbparenticon']="fa fa-dashboard";
+			$data['breadcrumb']=array("Data Santri"=>"");
+			$data['logo']="SIA Pesantren";	
 			$data['prov']=$this->Model_admin->get_prov();
 			$data['content']=$this->load->view("page_admin/santri",$data,true);
 			$this->dashboard($data,"xxx!@#xxx");	

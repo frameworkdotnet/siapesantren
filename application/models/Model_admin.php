@@ -65,6 +65,21 @@ class Model_admin extends CI_Model {
             return true;
         }
     }
+    public function get_santri($nis=NULL,$start=NULL,$limit=NULL,$setlimit=FALSE){
+        if($nis!=NULL){
+            $nis=$this->db->escape_str($nis);
+            $this->db->where("nis",$nis);
+            $query=$this->db->get("data_santri");
+        }else{
+            if($setlimit){
+                $query=$this->db->get("data_santri",$start,$limit);
+            }else{
+                $query=$this->db->get("data_santri");    
+            }
+            
+        }
+        return $query;
+    }
     public function get_prov($id_provinsi=NULL){
         if($id_provinsi!=NULL){
             $this->db->where("id",$id_provinsi);
@@ -79,6 +94,8 @@ class Model_admin extends CI_Model {
             }else{
                 $this->db->where("province_id",$id_provinsi);    
             }
+        }else{
+            $this->db->where("province_id",NULL);
         }
         $query=$this->db->get("regencies");
         return $query;
@@ -90,6 +107,8 @@ class Model_admin extends CI_Model {
             }else{
                 $this->db->where("regency_id",$id_kabkot);    
             }
+        }else{
+            $this->db->where("regency_id",NULL);
         }
         $query=$this->db->get("districts");
         return $query;
@@ -101,6 +120,8 @@ class Model_admin extends CI_Model {
             }else{
                 $this->db->where("district_id",$id_kec);    
             }
+        }else{
+            $this->db->where("district_id",NULL);
         }
         $query=$this->db->get("villages");
         return $query;
