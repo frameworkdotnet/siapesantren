@@ -39,6 +39,8 @@ class Login extends CI_Controller {
 					$this->db->where("id",$result->user_id);
 					$this->db->update("user",array("lastlogin"=>date("Y-m-d h:i:s")));	
 					redirect("admin");		
+				}else{
+					redirect("login");
 				}
 			}else if($sebagai=="santri"){
 				$gen_pass=sha1($password);
@@ -56,9 +58,11 @@ class Login extends CI_Controller {
 					$this->db->where("id",$result->user_id);
 					$this->db->update("user",array("lastlogin"=>date("Y-m-d h:i:s")));	
 					redirect("admin");		
+				}else{
+					redirect("login");
 				}
 			}else{
-
+				
 			}
 
 		}else{

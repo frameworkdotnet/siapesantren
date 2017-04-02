@@ -227,6 +227,7 @@ class Admin extends CI_Controller {
 			$data['breadcrumb']=array("Program Penawaran"=>"");
 			$data['logo']="Toko Online";
 			$data['penawaran']=$this->Model_admin->get_penawaran();	
+			$data['mapel']=$this->Model_admin->get_mapel();
 			$data['content']=$this->load->view("page_admin/penawaran",$data,true);
 			$this->dashboard($data,"xxx!@#xxx");
 		}else if($role=="simpanpenawaran"){
@@ -242,6 +243,35 @@ class Admin extends CI_Controller {
 					$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
 				}
 				redirect("admin/penawaran");
+			}else{
+				show_404();
+			}
+		}else if($role=="simpanmapel"){
+			if(sizeof($this->input->post())>0){
+				$datainput=array();
+				$nama_mapel=$this->input->post('mapel_penawaran');
+				$kkm=$this->input->post('mapel_kkm');
+				foreach ($nama_mapel as $key=>$value) {
+				  if(trim($value," ")!=""&&$kkm[$key]!=NULL){	
+					array_push($datainput, array(
+						'id_penawaran'=>$this->input->post('id_penawaran'),
+						'nama_mapel'=>$this->db->escape_str($value),
+						'standar_kkm'=>$kkm[$key]
+					));
+				  }	
+				}
+				if(sizeof($datainput)>0){
+				$this->db->insert_batch("mapel",$datainput);
+				$row_change=$this->db->affected_rows();
+				if($row_change>=0){
+					$this->session->set_flashdata("simpan",array("msg"=>"Data mapel di tambahkan","status"=>true,"row_change"=>$row_change));	
+				}else{
+					$this->session->set_flashdata("simpan",array("msg"=>"Data mapel di tambahkan","status"=>false,"row_change"=>$row_change));	
+				}
+				}else{
+					$this->session->set_flashdata("simpan",array("msg"=>"Data mapel harus terisi","status"=>false,"row_change"=>$row_change));
+				}
+				redirect("admin/penawaran/mapel");
 			}else{
 				show_404();
 			}

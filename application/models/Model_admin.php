@@ -24,6 +24,13 @@ class Model_admin extends CI_Model {
         $query=$this->db->get("penawaran");
         return $query;
     }
+    public function get_mapel(){
+        $this->db->select("*");
+        $this->db->from("penawaran a");
+        $this->db->join("mapel b","a.id=b.id_penawaran");
+        $query=$this->db->get();
+        return $query;
+    }
     public function get_ta($id=NULL){
         if($id!=NULL){$this->db->where("id",$id);}
         $query=$this->db->get("tahunajaran");

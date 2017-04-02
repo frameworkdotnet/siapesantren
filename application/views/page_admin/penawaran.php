@@ -130,7 +130,7 @@ legend {
                   <div class="col-md-12">
                       <div class="row">
                         <fieldset>
-                        <legend>Form Mapel Program Penawaran</legend>    
+                        <legend>Mapel Program Penawaran</legend>    
                    <div class="col-md-6"> 
                     <div class="form-group">
                       <label>Program Penawaran</label>
@@ -154,7 +154,7 @@ legend {
                     </div>
                    </div> 
                     <div class="form-group col-md-12">
-                      <button type="button" onclick="simpanbio()" class="btn btn-primary">Simpan</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                    
                     </fieldset>
@@ -163,19 +163,62 @@ legend {
                   <script type="text/javascript">
                   var x=1;
                   function plus_mapel(){
-                    $("#mapelplus").append('<div class="form-group">'+
-                    '<label>Nama Mapel Penawaran '+x+'</label>'+
-                    '<input type="text" class="form-control filter-text" name="mapel_penawaran[]" placeholder="Nama mapel" required>'+
-                  '</div>');
-                    x++;
+                    if($('select[name="id_penawaran"]').val()!=""){
+                      $("#mapelplus").append('<div class="form-group col-md-6">'+
+                      '<label>Nama Mapel Penawaran '+x+'</label>'+
+                      '<input type="text" class="form-control" name="mapel_penawaran[]" maxlength="50" placeholder="Nama mapel">'+
+                    '</div>'+
+                    '<div class="form-group col-md-3">'+
+                    '<label>Standar KKM '+x+'</label>'+
+                    '<input type="number" class="form-control" name="mapel_kkm[]" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxLength="3" placeholder="kkm" >'+
+                    '</div>');
+                      x++;
+                      }
                   }
                   </script>
                 <?php echo form_close(); ?>
                     </div>
                   </div>
-                  <div class="active tab-pane" id="datatoko">
+                  <div class="tab-pane" id="datatoko">
                     <div class="panel">
-                    
+                    <div class="panel-body">
+                  <div class="col-md-12">
+                    <div class="row">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th align="center" width="10%">No</th>
+                  <th>Program Penawaran</th>
+                  <th>Mapel</th>
+                  <th>Standar KKM</th>
+                  <th>Aksi</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php 
+                $mapel=$mapel->result();
+                $x=1;
+                foreach ($mapel as $key) {
+                ?>
+                  <tr>
+                    <td align="center"><?php echo $x; ?></td>
+                    <td><?php echo $key->penawaran; ?></td>
+                    <td><?php echo $key->nama_mapel; ?></td>
+                    <td><?php echo $key->standar_kkm; ?></td>
+                    <td>
+                      <button class="btn btn-warning btn-xs" data-id="<?php echo $key->id; ?>" onclick="edit_penawaran(event)">Edit</a>&nbsp
+                      <button class="btn btn-danger btn-xs" data-id="<?php echo $key->id; ?>" onclick="hapus_penawaran(event)">Hapus</button>
+                    </td>  
+                  </tr>
+                <?php
+                $x++;
+                }
+                ?>
+                </tbody>
+              </table>
+                    </div>
+                  </div>
+                  </div>
                     </div>
                   </div>
                   <?php
@@ -271,6 +314,26 @@ legend {
       <?php echo form_close(); ?>
     </div>
     <div id="hapusta" class="hide">
+      <?php echo form_open("admin/penawaran"); ?>
+      <input type="hidden" name="id_penawaranhapus" id="id_penawaran"><button class="btn btn-danger" type="submit">
+      Hapus</button>
+      <?php echo form_close(); ?>
+    </div>
+
+    <div id="editmapel" class="hide">
+      <?php echo form_open("admin/penawaran"); ?>
+      <input type="hidden" name="id_penawaranedit" id="id_penawaran">
+      <label>Program Penawaran</label>
+      <div class="form-group">
+        <input type="text" name="penawaran" class="form-control">
+      </div>
+      <div class="form-group">
+      <button class="btn btn-warning" type="submit">
+      Edit</button>
+      </div>
+      <?php echo form_close(); ?>
+    </div>
+    <div id="hapusmapel" class="hide">
       <?php echo form_open("admin/penawaran"); ?>
       <input type="hidden" name="id_penawaranhapus" id="id_penawaran"><button class="btn btn-danger" type="submit">
       Hapus</button>

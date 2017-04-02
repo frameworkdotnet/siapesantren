@@ -1,6 +1,6 @@
 /*
-SQLyog Enterprise - MySQL GUI v8.18 
-MySQL - 5.6.17 : Database - siapesantren
+SQLyog Ultimate v10.42 
+MySQL - 5.7.14 : Database - siapesantren
 *********************************************************************
 */
 
@@ -173,7 +173,7 @@ CREATE TABLE `user` (
 
 /*Data for the table `user` */
 
-insert  into `user`(`id`,`nis`,`password`,`sebagai`,`lastlogin`) values (1,'111111','40292cf66b17f2942d3e5560744c28d1a527f9c7','admin','2017-04-01 05:33:58');
+insert  into `user`(`id`,`nis`,`password`,`sebagai`,`lastlogin`) values (1,'111111','40292cf66b17f2942d3e5560744c28d1a527f9c7','admin','2017-04-02 10:33:24');
 
 /*Table structure for table `villages` */
 
