@@ -339,10 +339,19 @@
             <li><a href="<?php echo base_url(); ?>admin/santri/view"><i class="fa fa-circle-o"></i> Lihat Santri</a></li>
           </ul>
         </li>
-        <li>
-          <a href="<?php echo base_url(); ?>admin/penawaran">
-            <i class="fa fa-dashboard"></i> <span>Program Penawaran</span>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-th"></i>
+            <span>Program Penawaran</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo base_url(); ?>admin/penawaran"><i class="fa fa-circle-o"></i> Data Program Penawaran</a></li>
+            <li><a href="<?php echo base_url(); ?>admin/penawaran/mapel"><i class="fa fa-circle-o"></i> Data Mapel</a></li>
+            <li><a href="<?php echo base_url(); ?>admin/penawaran/mapel/kategorinilai"><i class="fa fa-circle-o"></i> Data Kategori Nilai</a></li>
+          </ul>
         </li>
         <li>
          <a href="<?php echo base_url(); ?>admin/tahunajaran">

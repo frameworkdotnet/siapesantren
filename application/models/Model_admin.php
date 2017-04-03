@@ -25,9 +25,17 @@ class Model_admin extends CI_Model {
         return $query;
     }
     public function get_mapel(){
-        $this->db->select("*");
+        $this->db->select("*,b.id as id_mapel");
         $this->db->from("penawaran a");
         $this->db->join("mapel b","a.id=b.id_penawaran");
+        $query=$this->db->get();
+        return $query;
+    }
+    public function get_kategori_nilai($idmapel){
+        $this->db->select("*,a.id as kategori_id");
+        $this->db->from("kategori_nilai a");
+        $this->db->join("mapel b","a.id_mapel=b.id");
+        $this->db->where("a.id_mapel",$idmapel);
         $query=$this->db->get();
         return $query;
     }

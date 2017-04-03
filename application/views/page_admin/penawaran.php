@@ -169,7 +169,7 @@ legend {
                       '<input type="text" class="form-control" name="mapel_penawaran[]" maxlength="50" placeholder="Nama mapel">'+
                     '</div>'+
                     '<div class="form-group col-md-3">'+
-                    '<label>Standar KKM '+x+'</label>'+
+                    '<label>Batas KKM '+x+'</label>'+
                     '<input type="number" class="form-control" name="mapel_kkm[]" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxLength="3" placeholder="kkm" >'+
                     '</div>');
                       x++;
@@ -206,8 +206,8 @@ legend {
                     <td><?php echo $key->nama_mapel; ?></td>
                     <td><?php echo $key->standar_kkm; ?></td>
                     <td>
-                      <button class="btn btn-warning btn-xs" data-id="<?php echo $key->id; ?>" onclick="edit_penawaran(event)">Edit</a>&nbsp
-                      <button class="btn btn-danger btn-xs" data-id="<?php echo $key->id; ?>" onclick="hapus_penawaran(event)">Hapus</button>
+                      <button class="btn btn-warning btn-xs" data-id="<?php echo $key->id; ?>" onclick="edit_mapel(event)">Edit</a>&nbsp
+                      <button class="btn btn-danger btn-xs" data-id="<?php echo $key->id; ?>" onclick="hapus_mapel(event)">Hapus</button>
                     </td>  
                   </tr>
                 <?php
@@ -299,6 +299,18 @@ legend {
     $("#showingmodal .modal-body").html($("#hapusta").html());
     $("#showingmodal").modal("show");
    }
+   function edit_mapel(e){
+    var id=$(e.target).attr("data-id");
+    $("#editmapel #id_mapel").val(id);
+    $("#showingmodal .modal-body").html($("#editmapel").html());
+    $("#showingmodal").modal("show");
+   }
+   function hapus_mapel(e){
+    var id=$(e.target).attr("data-id");
+    $("#hapusmapel #id_mapel").val(id);
+    $("#showingmodal .modal-body").html($("#hapusmapel").html());
+    $("#showingmodal").modal("show");
+   }
       </script>
     <div id="edit" class="hide">
       <?php echo form_open("admin/penawaran"); ?>
@@ -322,10 +334,10 @@ legend {
 
     <div id="editmapel" class="hide">
       <?php echo form_open("admin/penawaran"); ?>
-      <input type="hidden" name="id_penawaranedit" id="id_penawaran">
-      <label>Program Penawaran</label>
+      <input type="hidden" name="id_mapel" id="id_mapel">
+      <label>Nama Mapel</label>
       <div class="form-group">
-        <input type="text" name="penawaran" class="form-control">
+        <input type="text" name="nama_mapel" class="form-control">
       </div>
       <div class="form-group">
       <button class="btn btn-warning" type="submit">
@@ -335,7 +347,7 @@ legend {
     </div>
     <div id="hapusmapel" class="hide">
       <?php echo form_open("admin/penawaran"); ?>
-      <input type="hidden" name="id_penawaranhapus" id="id_penawaran"><button class="btn btn-danger" type="submit">
+      <input type="hidden" name="id_mapel" id="id_mapel"><button class="btn btn-danger" type="submit">
       Hapus</button>
       <?php echo form_close(); ?>
     </div>

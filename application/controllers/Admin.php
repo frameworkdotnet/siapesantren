@@ -207,7 +207,7 @@ class Admin extends CI_Controller {
 		
 		$this->dashboard($data,"xxx!@#xxx");
 	}
-	public function penawaran($role=NULL){
+	public function penawaran($role=NULL,$subrole=NULL,$idsubrole=NULL){
 		if($this->input->post("id_penawaranedit")!=NULL){
 			$this->db->where("id",$this->input->post("id_penawaranedit"));
 			$this->db->update("penawaran",array("penawaran"=>$this->input->post("penawaran")));
@@ -219,17 +219,79 @@ class Admin extends CI_Controller {
 			redirect("admin/penawaran");
 		}
 		if($role=="mapel"){
-			$data['role']="mapel";
-			$data['title']="Mapel Program Penawaran";
-			$data['title2']="Mapel Program Penawaran ";
-			$data['subtitle2']="";
-			$data['breadcumbparenticon']="fa fa-dashboard";
-			$data['breadcrumb']=array("Program Penawaran"=>"");
-			$data['logo']="Toko Online";
-			$data['penawaran']=$this->Model_admin->get_penawaran();	
-			$data['mapel']=$this->Model_admin->get_mapel();
-			$data['content']=$this->load->view("page_admin/penawaran",$data,true);
-			$this->dashboard($data,"xxx!@#xxx");
+			if($subrole=="kategorinilai"){
+				$data['role']="mapel";
+				$data['title']="Kategori Nilai Mapel";
+				$data['title2']="Kategori Nilai Mapel";
+				$data['subtitle2']="";
+				$data['breadcumbparenticon']="fa fa-dashboard";
+				$data['breadcrumb']=array("Program Penawaran"=>"admin/penawaran","Mapel"=>"admin/penawaran/mapel","Kategori Nilai"=>"");
+				$data['logo']="SIA Pesantren";
+				$data['minlogo']="SP";	
+				$data['mapel']=$this->Model_admin->get_mapel();
+				$data['content']=$this->load->view("page_admin/kategorinilai",$data,true);
+				$this->dashboard($data,"xxx!@#xxx");
+			}else if($subrole=="inputkategori"||$subrole=="editkategori"){
+				$id=$this->urlenkripsi->decode_url($idsubrole);
+				$data['role']="mapel";
+				$data['title']="Kategori Nilai Mapel";
+				$data['title2']="Kategori Nilai Mapel";
+				$data['subtitle2']="";
+				$data['breadcumbparenticon']="fa fa-dashboard";
+				$data['breadcrumb']=array("Program Penawaran"=>"admin/penawaran","Mapel"=>"admin/penawaran/mapel","Kategori Nilai"=>"");
+				$data['logo']="SIA Pesantren";
+				$data['minlogo']="SP";
+				$data['role']=$subrole=="inputkategori"?'input':'edit';
+				$data['idmapel']=$id;
+				$data['kategori']=$this->Model_admin->get_kategori_nilai($id);	
+				$data['content']=$this->load->view("page_admin/kategorinilai",$data,true);
+				$this->dashboard($data,"xxx!@#xxx");
+			}else if($subrole=="hapuskategori"){
+				$id=$this->urlenkripsi->decode_url($idsubrole);
+				
+			}else if($subrole=="insertkategoriaction"){
+				if(sizeof($this->input->post())>0){
+				$datainput=array();
+				$nama_mapel=$this->input->post('kategori_penilaian');
+				foreach ($nama_mapel as $key=>$value) {
+				  if(trim($value," ")!=""){	
+					array_push($datainput, array(
+						'id_mapel'=>$this->input->post('id_mapel'),
+						'nama_kategori'=>$this->db->escape_str($value)
+					));
+				  }	
+				}
+				if(sizeof($datainput)>0){
+				$this->db->insert_batch("kategori_nilai",$datainput);
+				$row_change=$this->db->affected_rows();
+				if($row_change>0){
+					$this->session->set_flashdata("simpan",array("msg"=>"Data sudah di tambahkan","status"=>true,"row_change"=>$row_change));	
+				}else{
+					$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
+				}
+				}else{
+					$this->session->set_flashdata("simpan",array("msg"=>"Data mapel harus terisi","status"=>false,"row_change"=>$row_change));
+				}
+				redirect("admin/penawaran/mapel/kategorinilai");
+			}else{
+				show_404();
+			}
+			}else if($subrole==NULL){
+				$data['role']="mapel";
+				$data['title']="Mapel Program Penawaran";
+				$data['title2']="Mapel Program Penawaran ";
+				$data['subtitle2']="";
+				$data['breadcumbparenticon']="fa fa-dashboard";
+				$data['breadcrumb']=array("Program Penawaran"=>"admin/penawaran","Mapel"=>"");
+				$data['logo']="SIA Pesantren";
+				$data['minlogo']="TO";
+				$data['penawaran']=$this->Model_admin->get_penawaran();	
+				$data['mapel']=$this->Model_admin->get_mapel();
+				$data['content']=$this->load->view("page_admin/penawaran",$data,true);
+				$this->dashboard($data,"xxx!@#xxx");
+			}else{
+				redirect("admin/penawaran/mapel");
+			}
 		}else if($role=="simpanpenawaran"){
 			if(sizeof($this->input->post())>0){
 				$datainput=array(
@@ -237,7 +299,7 @@ class Admin extends CI_Controller {
 				);
 				$this->db->insert("penawaran",$datainput);
 				$row_change=$this->db->affected_rows();
-				if($row_change>=0){
+				if($row_change>0){
 					$this->session->set_flashdata("simpan",array("msg"=>"Data telah di tambahkan","status"=>true,"row_change"=>$row_change));	
 				}else{
 					$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
@@ -282,7 +344,8 @@ class Admin extends CI_Controller {
 			$data['subtitle2']="";
 			$data['breadcumbparenticon']="fa fa-dashboard";
 			$data['breadcrumb']=array("Program Penawaran"=>"");
-			$data['logo']="Toko Online";
+			$data['logo']="SIA Pesantren";
+			$data['minlogo']="TO";
 			$data['penawaran']=$this->Model_admin->get_penawaran();	
 			$data['content']=$this->load->view("page_admin/penawaran",$data,true);
 			$this->dashboard($data,"xxx!@#xxx");	
@@ -326,6 +389,7 @@ class Admin extends CI_Controller {
 		$data['breadcumbparenticon']="fa fa-dashboard";
 		$data['breadcrumb']=array("Tahun Ajaran"=>"");
 		$data['logo']="SIA Pesantren";
+		$data['minlogo']="TO";
 		$data['ta']=$this->Model_admin->get_ta();	
 		$data['content']=$this->load->view("page_admin/tahunajaran",$data,true);
 		$this->dashboard($data,"xxx!@#xxx");
@@ -356,6 +420,7 @@ class Admin extends CI_Controller {
 			$data['breadcumbparenticon']="fa fa-dashboard";
 			$data['breadcrumb']=array("Data Santri"=>"");
 			$data['logo']="SIA Pesantren";
+			$data['minlogo']="SP";
 			$santri=$this->Model_admin->get_santri();
 			$this->load->library('pagination');
 			$config['base_url'] = base_url()."admin/santri/view/";
@@ -453,6 +518,7 @@ class Admin extends CI_Controller {
 				$data['breadcumbparenticon']="fa fa-dashboard";
 				$data['breadcrumb']=array("Data Santri"=>"");
 				$data['logo']="SIA Pesantren";
+				$data['minlogo']="SP";
 				$data['santri']=$santri;
 				$data['sethapus']=true;
 				$data['content']=$this->load->view("page_admin/view_santri",$data,true);
@@ -518,6 +584,7 @@ class Admin extends CI_Controller {
 			$data['breadcumbparenticon']="fa fa-dashboard";
 			$data['breadcrumb']=array("Data Santri"=>"");
 			$data['logo']="SIA Pesantren";	
+			$data['minlogo']="SP";
 			$data['prov']=$this->Model_admin->get_prov();
 			$data['content']=$this->load->view("page_admin/santri",$data,true);
 			$this->dashboard($data,"xxx!@#xxx");	
