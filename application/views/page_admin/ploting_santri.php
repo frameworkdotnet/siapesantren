@@ -54,23 +54,21 @@ legend {
             </ul>
             <div class="tab-content">
               <?php  
-                if($role=="penawaran"){
+                if($role=="plotingsantri"){
               ?>
               <div class="active tab-pane" id="datapribadi">
               <div class="panel">
-              <?php echo form_open("admin/penawaran/simpanpenawaran",array("class"=>"panel-body","id"=>"formbio","onsubmit"=>"return validation_bio()"));   
+              <?php echo form_open("admin/kbm/simpanplotingsantri",array("class"=>"panel-body","id"=>"formbio","onsubmit"=>"return validation_bio()"));   
               ?>
                 <div class="col-md-12">
                     <div class="row">
                       <fieldset>
-                      <legend>Form Program Penawaran</legend>
-              
-                  <div class="form-group col-md-6">
-                    <label>Nama Program Penawaran</label>
-                    <input type="text" class="form-control filter-text" name="nama_penawaran" placeholder="Name Program Penawaran" required>
-                  </div>
+                      <legend>Ploting Program Penawaran Santri</legend>
+                    <div class="form-group col-md-6">
+                      
+                    </div>
                   <div class="form-group col-md-12">
-                    <button type="button" onclick="simpanbio()" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-primary">Simpan</button>
                   </div>
                  
                   </fieldset>
@@ -87,34 +85,7 @@ legend {
                 <div class="panel-body">
                   <div class="col-md-12">
                     <div class="row">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th align="center" width="10%">No</th>
-                  <th>Program Penawaran</th>
-                  <th>Aksi</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php 
-                $penawaran=$penawaran->result();
-                $x=1;
-                foreach ($penawaran as $key) {
-                ?>
-                  <tr>
-                    <td align="center"><?php echo $x; ?></td>
-                    <td><?php echo $key->penawaran; ?></td>
-                    <td>
-                      <button class="btn btn-warning btn-xs" data-id="<?php echo $key->id; ?>" onclick="edit_penawaran(event)">Edit</a>&nbsp
-                      <button class="btn btn-danger btn-xs" data-id="<?php echo $key->id; ?>" onclick="hapus_penawaran(event)">Hapus</button>
-                    </td>  
-                  </tr>
-                <?php
-                $x++;
-                }
-                ?>
-                </tbody>
-              </table>
+    
                     </div>
                   </div>
                   </div>
@@ -287,67 +258,5 @@ legend {
       "autoWidth": true
     });
   });     
-   function edit_penawaran(e){
-    var id=$(e.target).attr("data-id");
-    $("#edit #id_penawaran").val(id);
-    $("#showingmodal .modal-body").html($("#edit").html());
-    $("#showingmodal").modal("show");
-   }
-   function hapus_penawaran(e){
-    var id=$(e.target).attr("data-id");
-    $("#hapusta #id_penawaran").val(id);
-    $("#showingmodal .modal-body").html($("#hapusta").html());
-    $("#showingmodal").modal("show");
-   }
-   function edit_mapel(e){
-    var id=$(e.target).attr("data-id");
-    $("#editmapel #id_mapel").val(id);
-    $("#showingmodal .modal-body").html($("#editmapel").html());
-    $("#showingmodal").modal("show");
-   }
-   function hapus_mapel(e){
-    var id=$(e.target).attr("data-id");
-    $("#hapusmapel #id_mapel").val(id);
-    $("#showingmodal .modal-body").html($("#hapusmapel").html());
-    $("#showingmodal").modal("show");
-   }
+  
       </script>
-    <div id="edit" class="hide">
-      <?php echo form_open("admin/penawaran"); ?>
-      <input type="hidden" name="id_penawaranedit" id="id_penawaran">
-      <label>Program Penawaran</label>
-      <div class="form-group">
-        <input type="text" name="penawaran" class="form-control">
-      </div>
-      <div class="form-group">
-      <button class="btn btn-warning" type="submit">
-      Edit</button>
-      </div>
-      <?php echo form_close(); ?>
-    </div>
-    <div id="hapusta" class="hide">
-      <?php echo form_open("admin/penawaran"); ?>
-      <input type="hidden" name="id_penawaranhapus" id="id_penawaran"><button class="btn btn-danger" type="submit">
-      Hapus</button>
-      <?php echo form_close(); ?>
-    </div>
-
-    <div id="editmapel" class="hide">
-      <?php echo form_open("admin/penawaran"); ?>
-      <input type="hidden" name="id_mapel_edit" id="id_mapel">
-      <label>Nama Mapel</label>
-      <div class="form-group">
-        <input type="text" name="nama_mapel" class="form-control">
-      </div>
-      <div class="form-group">
-      <button class="btn btn-warning" type="submit">
-      Edit</button>
-      </div>
-      <?php echo form_close(); ?>
-    </div>
-    <div id="hapusmapel" class="hide">
-      <?php echo form_open("admin/penawaran"); ?>
-      <input type="hidden" name="id_mapel_hapus" id="id_mapel"><button class="btn btn-danger" type="submit">
-      Hapus</button>
-      <?php echo form_close(); ?>
-    </div>

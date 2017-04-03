@@ -20,7 +20,7 @@
   <!-- iCheck -->
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/iCheck/flat/blue.css">
 
-<script src="<?php echo base_url(); ?>assets/plugins/jQuery/jquery-2.2.3.min.js"></script>
+  <script src="<?php echo base_url(); ?>assets/plugins/jQuery/jquery-2.2.3.min.js"></script>
 
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -355,8 +355,22 @@
         </li>
         <li>
          <a href="<?php echo base_url(); ?>admin/tahunajaran">
-           <i class="fa fa-book"></i> <span>Tahun Ajaran</span>
+           <i class="fa fa-th"></i> <span>Tahun Ajaran</span>
          </a>
+        </li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-book"></i>
+            <span>Kegiatan Pembelajaran</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo base_url(); ?>admin/kbm/ploting/santri"><i class="fa fa-circle-o"></i> Ploting Santri</a></li>
+            <li><a href="<?php echo base_url(); ?>admin/kbm"><i class="fa fa-circle-o"></i> Data Mapel</a></li>
+            <li><a href="<?php echo base_url(); ?>admin/kbm"><i class="fa fa-circle-o"></i> Data Kategori Nilai</a></li>
+          </ul>
         </li>
         <!--
         <li class="treeview">

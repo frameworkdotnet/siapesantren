@@ -211,12 +211,46 @@ class Admin extends CI_Controller {
 		if($this->input->post("id_penawaranedit")!=NULL){
 			$this->db->where("id",$this->input->post("id_penawaranedit"));
 			$this->db->update("penawaran",array("penawaran"=>$this->input->post("penawaran")));
+			$row_change=$this->db->affected_rows();
+			if($row_change>0){
+				$this->session->set_flashdata("simpan",array("msg"=>"Data sudah di ganti","status"=>true,"row_change"=>$row_change));	
+			}else{
+				$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di ganti","status"=>false,"row_change"=>$row_change));	
+			}
 			redirect("admin/penawaran");
 		}
 		if($this->input->post("id_penawaranhapus")!=NULL){
 			$this->db->where("id",$this->input->post("id_penawaranhapus"));
 			$this->db->delete("penawaran");
+			$row_change=$this->db->affected_rows();
+			if($row_change>0){
+				$this->session->set_flashdata("simpan",array("msg"=>"Data sudah di ganti","status"=>true,"row_change"=>$row_change));	
+			}else{
+				$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di ganti","status"=>false,"row_change"=>$row_change));	
+			}
 			redirect("admin/penawaran");
+		}
+		if($this->input->post('id_mapel_edit')!=NULL){
+			$this->db->where("id",$this->input->post("id_mapel_edit"));
+			$this->db->update("mapel",array("nama_mapel"=>$this->input->post("nama_mapel")));
+			$row_change=$this->db->affected_rows();
+			if($row_change>0){
+				$this->session->set_flashdata("simpan",array("msg"=>"Data sudah di ganti","status"=>true,"row_change"=>$row_change));	
+			}else{
+				$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di ganti","status"=>false,"row_change"=>$row_change));	
+			}
+			redirect("admin/penawaran/mapel");
+		}
+		if($this->input->post('id_mapel_hapus')!=NULL){
+			$this->db->where("id",$this->input->post("id_mapel_hapus"));
+			$this->db->delete("mapel");
+			$row_change=$this->db->affected_rows();
+			if($row_change>0){
+				$this->session->set_flashdata("simpan",array("msg"=>"Data sudah di ganti","status"=>true,"row_change"=>$row_change));	
+			}else{
+				$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di ganti","status"=>false,"row_change"=>$row_change));	
+			}
+			redirect("admin/penawaran/mapel");
 		}
 		if($role=="mapel"){
 			if($subrole=="kategorinilai"){
@@ -247,35 +281,78 @@ class Admin extends CI_Controller {
 				$data['content']=$this->load->view("page_admin/kategorinilai",$data,true);
 				$this->dashboard($data,"xxx!@#xxx");
 			}else if($subrole=="hapuskategori"){
-				$id=$this->urlenkripsi->decode_url($idsubrole);
-				
+				if(sizeof($this->input->post())>0){
+					$id_mapel=$this->input->post('id_mapel');
+					$this->db->where("id_mapel",$id_mapel);
+					$this->db->delete("kategori_nilai");
+					$row_change=$this->db->affected_rows();
+					if($row_change>0){
+						$this->session->set_flashdata("simpan",array("msg"=>"Data sudah di hapus","status"=>true,"row_change"=>$row_change));	
+					}else{
+						$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di hapus","status"=>false,"row_change"=>$row_change));	
+					}
+				}else{
+					show_404();
+				}
 			}else if($subrole=="insertkategoriaction"){
 				if(sizeof($this->input->post())>0){
-				$datainput=array();
-				$nama_mapel=$this->input->post('kategori_penilaian');
-				foreach ($nama_mapel as $key=>$value) {
-				  if(trim($value," ")!=""){	
-					array_push($datainput, array(
-						'id_mapel'=>$this->input->post('id_mapel'),
-						'nama_kategori'=>$this->db->escape_str($value)
-					));
-				  }	
-				}
-				if(sizeof($datainput)>0){
-				$this->db->insert_batch("kategori_nilai",$datainput);
-				$row_change=$this->db->affected_rows();
-				if($row_change>0){
-					$this->session->set_flashdata("simpan",array("msg"=>"Data sudah di tambahkan","status"=>true,"row_change"=>$row_change));	
+					$datainput=array();
+					$nama_mapel=$this->input->post('kategori_penilaian');
+					foreach ($nama_mapel as $key=>$value) {
+					  if(trim($value," ")!=""){	
+						array_push($datainput, array(
+							'id_mapel'=>$this->input->post('id_mapel'),
+							'nama_kategori'=>$this->db->escape_str($value)
+						));
+					  }	
+					}
+					if(sizeof($datainput)>0){
+					$this->db->insert_batch("kategori_nilai",$datainput);
+					$row_change=$this->db->affected_rows();
+					if($row_change>0){
+						$this->session->set_flashdata("simpan",array("msg"=>"Data sudah di tambahkan","status"=>true,"row_change"=>$row_change));	
+					}else{
+						$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
+					}
+					}else{
+						$this->session->set_flashdata("simpan",array("msg"=>"Data mapel harus terisi","status"=>false,"row_change"=>$row_change));
+					}
+					redirect("admin/penawaran/mapel/kategorinilai");
 				}else{
-					$this->session->set_flashdata("simpan",array("msg"=>"Data gagal di tambahkan","status"=>false,"row_change"=>$row_change));	
+					show_404();
 				}
+			}else if($subrole=="editkategoriaction"){
+				
+				if(sizeof($this->input->post())>0){
+					$row_change=0;
+					$edit=$this->input->post('kategori_penilaian_edit');
+					$insert=$this->input->post('kategori_penilaian_insert');
+					$hapus=$this->input->post('kategori_penilaian_hapus');
+					foreach ($hapus as $key => $value) {
+						$this->db->where("id",$key);
+						$this->db->delete("kategori_nilai");
+					}
+					$row_change=$row_change+$this->db->affected_rows();
+					foreach ($edit as $key => $value) {
+						$this->db->where("id",$key);
+						$this->db->update("kategori_nilai",array("nama_kategori"=>$value));
+					}
+					$row_change=$row_change+$this->db->affected_rows();
+					foreach ($insert as $key) {
+						$this->db->insert("kategori_nilai",array("id_mapel"=>$this->input->post("id_mapel"),"nama_kategori"=>$key));
+					}
+					$row_change=$row_change+$this->db->affected_rows();
+					if($row_change>0){
+						$this->session->set_flashdata("simpan",array("msg"=>"Data sudah di tambahkan","status"=>true,"row_change"=>$row_change));	
+					}else{
+						$this->session->set_flashdata("simpan",array("msg"=>"Tidak ada perubahan","status"=>true,"row_change"=>$row_change));	
+					}
+					redirect("admin/penawaran/mapel/kategorinilai");
+					
 				}else{
-					$this->session->set_flashdata("simpan",array("msg"=>"Data mapel harus terisi","status"=>false,"row_change"=>$row_change));
+					show_404();
 				}
-				redirect("admin/penawaran/mapel/kategorinilai");
-			}else{
-				show_404();
-			}
+
 			}else if($subrole==NULL){
 				$data['role']="mapel";
 				$data['title']="Mapel Program Penawaran";
@@ -495,10 +572,23 @@ class Admin extends CI_Controller {
 					    'work_ibu'=>$this->input->post('workibu'), 
 					    'hp_ortu'=>$this->input->post('hportu')
 		    		);
-				$this->db->where("nis",$datainput['nis']);
-				$this->db->update("data_santri",$datainput);
+					$this->db->trans_start();
+		    		$this->db->where("nis",$datainput['nis']);
+					$this->db->update("data_santri",$datainput);
+					
+					$this->db->where("nis",$datainput['nis']);
+					$this->db->where("sebagai","Santri");
+					$this->db->update("user",array(
+						"password"=>sha1($this->input->post('tgl_lhr'))
+					));
+		    		$this->db->trans_complete();
+					if ($this->db->trans_status() === FALSE)
+					{
+						$this->session->set_flashdata("simpan",array("msg"=>"Proses gagal, silahkan ulangi kembali","status"=>false,"row_change"=>$row_change));
+					}
+				
 				$row_change=$this->db->affected_rows();
-				if($row_change>=0){
+				if($row_change>0){
 					$this->session->set_flashdata("simpan",array("msg"=>"Data telah di ganti","status"=>true,"row_change"=>$row_change));	
 				}else{
 					$this->session->set_flashdata("simpan",array("msg"=>"Tidak ada perubahan","status"=>true,"row_change"=>$row_change));	
@@ -565,7 +655,18 @@ class Admin extends CI_Controller {
 					    'work_ibu'=>$this->input->post('workibu'), 
 					    'hp_ortu'=>$this->input->post('hportu')
 		    		);
+		    		$this->db->trans_start();
 		    		$this->db->insert("data_santri",$datainput);
+		    		$this->db->insert("user",array(
+		    			"nis"=>$datainput['nis'],
+		    			"password"=>sha1($this->input->post('tgl_lhr')),
+		    			"sebagai"=>"Santri"
+		    		));
+		    		$this->db->trans_complete();
+					if ($this->db->trans_status() === FALSE)
+					{
+						$this->session->set_flashdata("simpan",array("msg"=>"Proses gagal, silahkan ulangi kembali","status"=>false,"row_change"=>$row_change));
+					}
 		    		$row_change=$this->db->affected_rows();
 					if($row_change>=0){
 						$this->session->set_flashdata("simpan",array("msg"=>"Data telah di tambahkan","status"=>true,"row_change"=>$row_change));	
@@ -591,21 +692,27 @@ class Admin extends CI_Controller {
 		}
 			
 	}
+	public function kbm($role=NULL,$subrole=NULL){
+		if($role=="ploting"){
+			if($subrole=="santri"){
+				$data['title']="Ploting Santri";
+				$data['logo']="SIA Pesantren";
+				$data['minlogo']="SP";
+				$data['role']="plotingsantri";
+				$data['title2']="Ploting Santri";
+				$data['subtitle2']="Ploting Santri";
+				$data['breadcumbparenticon']="fa fa-book";
+				$data['breadcrumb']=array("Kegiatan Pembelajaran"=>"admin/kbm/ploting","Ploting Santri"=>"");
+				$data['content']=$this->load->view("page_admin/ploting_santri",$data,true);
+			}	
+		}else{
+
+		}
+		$this->dashboard($data,"xxx!@#xxx");
+	}
 	function logout(){
 		$this->session->sess_destroy();
 		redirect("login");
-	}
-	public function barang(){
-		$data['title']="Tambah Barang | Admin";
-		$data['logo']="Toko Online";
-		$data['minlogo']="TO";
-		
-		$data['title2']="Barang";
-		$data['subtitle2']="Tambah Barang";
-		$data['breadcumbparenticon']="fa fa-th";
-		$data['breadcrumb']=array("Barang"=>"admin/barang","Tambah Barang"=>"");
-		$data['content']=$this->load->view("page_admin/barang",$data,true);
-		$this->dashboard($data,"xxx!@#xxx");
 	}
 	function edit_barang(){
 		if($this->input->post('token')!=NULL){

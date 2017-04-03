@@ -107,7 +107,7 @@ legend {
                     <div class="input-group-addon">
                       <i class="fa fa-calendar"></i>
                     </div>
-                    <input type="text" id="datemasktgl" class="form-control" name="tgl_lhr" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                    <input required type="text" id="datemasktgl" class="form-control" name="tgl_lhr" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
                     </div>
                   </div>
                   </fieldset>

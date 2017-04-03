@@ -73,17 +73,19 @@ legend {
                     <script type="text/javascript">
                   var x=1;
                   function plus_mapel(){
+                    if(x<=10){
                       $("#mapelplus").append('<div class="form-group col-md-6">'+
                       '<label>Nama kategori_penilaian '+x+'</label>'+
                       '<input type="text" class="form-control" name="kategori_penilaian[]" maxlength="50" placeholder="Nama Kategori">'+
                     '</div>');
                       x++;
+                     } 
                   }
                   </script>
                 <?php
                 echo form_close();
               }else if(isset($role)&&$role=="edit"){
-                echo form_open("admin/penawaran/makul/editkategoriaction");
+                echo form_open("admin/penawaran/mapel/editkategoriaction");
                 ?>
                 <div class="form-group">
                   <input type="hidden" name="id_mapel" value="<?php echo $idmapel; ?>">
@@ -95,9 +97,10 @@ legend {
                       $kategori=$kategori->result();
                        foreach ($kategori as $key) {
                          ?>
-                         <div class="form-group col-md-6">
+                         <div class="form-group col-md-6" id="rem<?php echo $x; ?>">
                           <label>Nama kategori_penilaian <?php echo $x; ?></label>
-                          <input type="text" value="<?php echo $key->nama_kategori; ?>" class="form-control" name="kategori_penilaian[<?php echo $key->kategori_id; ?>]" maxlength="50">
+                            <button type="button" onclick="remove_element(<?php echo $x; ?>)" class="btn btn-danger btn-xs">X</button>
+                          <input type="text" value="<?php echo $key->nama_kategori; ?>" class="form-control" name="kategori_penilaian_edit[<?php echo $key->kategori_id; ?>]" data-id="<?php echo $key->kategori_id; ?>" maxlength="50">
                         </div>
                          <?php
                          $x++;
@@ -111,11 +114,17 @@ legend {
                     <script type="text/javascript">
                   var x=<?php echo $x; ?>;
                   function plus_mapel(){
-                      $("#mapelplus").append('<div class="form-group col-md-6">'+
-                      '<label>Nama kategori_penilaian '+x+'</label>'+
-                      '<input type="text" class="form-control" name="kategori_penilaian[]" maxlength="50" placeholder="Nama Kategori">'+
+                    if(x<=10){
+                      $("#mapelplus").append('<div class="form-group col-md-6" id="rem'+x+'">'+
+                      '<label>Nama kategori_penilaian '+x+'</label><button onclick="remove_element('+x+')" type="button" class="btn btn-danger btn-xs">X</button>'+
+                      '<input type="text" class="form-control" name="kategori_penilaian_insert[]" maxlength="50" placeholder="Nama Kategori">'+
                     '</div>');
                       x++;
+                      }
+                  }
+                  function remove_element(e){
+                    $("#rem"+e).addClass('hide');
+                    $("#rem"+e+" .form-control").attr('name','kategori_penilaian_hapus['+$("#rem"+e+" .form-control").attr("data-id")+']');
                   }
                   </script>
                 <?php
@@ -146,14 +155,24 @@ legend {
                     <td><?php  
                       $kategori=$this->Model_admin->get_kategori_nilai($key->id_mapel);
                       $kategori=$kategori->result();
+                      $n=0;
                       foreach ($kategori as $key) {
                         echo $key->nama_kategori.",";
+                        $n++;
                       }
                     ?></td>
                     <td>
-                      <a class="btn btn-primary btn-xs" data-id="<?php echo $key->id; ?>" href="<?php echo base_url(); ?>admin/penawaran/mapel/inputkategori/<?php echo $this->urlenkripsi->encode_url($key->id_mapel); ?>">Input</a>
-                      <a class="btn btn-warning btn-xs" data-id="<?php echo $key->id; ?>" href="<?php echo base_url(); ?>admin/penawaran/mapel/editkategori/<?php echo $this->urlenkripsi->encode_url($key->id_mapel); ?>">Edit</a>
-                      <a class="btn btn-danger btn-xs" data-id="<?php echo $key->id; ?>" onclick="hapus_kategori(event)">Hapus</a>
+                    <?php if($n==0){
+                      ?>
+                        <a class="btn btn-primary btn-xs" data-id="<?php echo $key->id; ?>" href="<?php echo base_url(); ?>admin/penawaran/mapel/inputkategori/<?php echo $this->urlenkripsi->encode_url($key->id_mapel); ?>">Input</a>
+                      <?php
+                      }else{
+                        ?>
+                        <a class="btn btn-warning btn-xs" data-id="<?php echo $key->id; ?>" href="<?php echo base_url(); ?>admin/penawaran/mapel/editkategori/<?php echo $this->urlenkripsi->encode_url($key->id_mapel); ?>">Edit</a>
+                      <a class="btn btn-danger btn-xs" data-id="<?php echo $key->id_mapel; ?>" onclick="hapus_kategori(event)">Hapus</a>
+                        <?php
+                      } ?>
+                      
                     </td>  
                   </tr>
                 <?php
@@ -238,8 +257,8 @@ legend {
    }
       </script>
     <div id="hapusta" class="hide">
-      <?php echo form_open("admin/penawaran"); ?>
-      <input type="hidden" name="id_kategorinilai" id="id_kategorinilai"><button class="btn btn-danger" type="submit">
+      <?php echo form_open("admin/penawaran/mapel/hapuskategori"); ?>
+      <input type="hidden" name="id_mapel" id="id_kategorinilai"><button class="btn btn-danger" type="submit">
       Hapus</button>
       <?php echo form_close(); ?>
     </div>

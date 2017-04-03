@@ -19,6 +19,16 @@ class Model_admin extends CI_Model {
         $query=$this->db->get("barang");
         return $query;
     }
+    public function get_ta_aktiv(){
+        $this->db->where("status","Aktif");
+        $data=$this->db->get("tahunajaran");
+        $data=$data->row();
+        if(isset($data)){
+            return $data;
+        }else{
+            return false;
+        }   
+    }
     public function get_penawaran($id=NULL){
         if($id!=NULL){$this->db->where("id",$id);}
         $query=$this->db->get("penawaran");

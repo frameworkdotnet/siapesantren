@@ -1,6 +1,6 @@
 /*
-SQLyog Enterprise - MySQL GUI v8.18 
-MySQL - 5.6.17 : Database - siapesantren
+SQLyog Ultimate v10.42 
+MySQL - 5.7.14 : Database - siapesantren
 *********************************************************************
 */
 
@@ -76,12 +76,14 @@ CREATE TABLE `kategori_nilai` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_mapel` int(11) NOT NULL,
   `nama_kategori` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  KEY `kategorinilai_mapel` (`id_mapel`),
+  CONSTRAINT `kategorinilai_mapel` FOREIGN KEY (`id_mapel`) REFERENCES `mapel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `kategori_nilai` */
 
-insert  into `kategori_nilai`(`id`,`id_mapel`,`nama_kategori`) values (1,1,'Teori'),(2,1,'Praktek');
+insert  into `kategori_nilai`(`id`,`id_mapel`,`nama_kategori`) values (1,1,'Teori'),(2,1,'Praktek'),(4,1,'Menghafal');
 
 /*Table structure for table `mapel` */
 
@@ -92,12 +94,14 @@ CREATE TABLE `mapel` (
   `id_penawaran` int(11) DEFAULT NULL,
   `nama_mapel` varchar(50) DEFAULT NULL,
   `standar_kkm` tinyint(3) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `mapel_penawaran` (`id_penawaran`),
+  CONSTRAINT `mapel_penawaran` FOREIGN KEY (`id_penawaran`) REFERENCES `penawaran` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `mapel` */
 
-insert  into `mapel`(`id`,`id_penawaran`,`nama_mapel`,`standar_kkm`) values (1,1,'Amtsilati 1',75),(2,1,'Amtsilati 2',70);
+insert  into `mapel`(`id`,`id_penawaran`,`nama_mapel`,`standar_kkm`) values (1,1,'Mapel Amtsilati 1',75),(2,1,'Mapel Amtsilati 2',70);
 
 /*Table structure for table `penawaran` */
 
@@ -112,6 +116,26 @@ CREATE TABLE `penawaran` (
 /*Data for the table `penawaran` */
 
 insert  into `penawaran`(`id`,`penawaran`) values (1,'Amtsilatis');
+
+/*Table structure for table `plot_penawaran` */
+
+DROP TABLE IF EXISTS `plot_penawaran`;
+
+CREATE TABLE `plot_penawaran` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_penawaran` int(11) NOT NULL,
+  `nis` varchar(50) NOT NULL,
+  `id_ta` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `plot_penawaran` (`id_penawaran`),
+  KEY `plot_santri` (`nis`),
+  KEY `plot_ta` (`id_ta`),
+  CONSTRAINT `plot_penawaran` FOREIGN KEY (`id_penawaran`) REFERENCES `penawaran` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `plot_santri` FOREIGN KEY (`nis`) REFERENCES `data_santri` (`nis`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `plot_ta` FOREIGN KEY (`id_ta`) REFERENCES `tahunajaran` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `plot_penawaran` */
 
 /*Table structure for table `provinces` */
 
@@ -177,7 +201,7 @@ CREATE TABLE `user` (
 
 /*Data for the table `user` */
 
-insert  into `user`(`id`,`nis`,`password`,`sebagai`,`lastlogin`) values (1,'111111','40292cf66b17f2942d3e5560744c28d1a527f9c7','admin','2017-04-02 02:11:39');
+insert  into `user`(`id`,`nis`,`password`,`sebagai`,`lastlogin`) values (1,'111111','40292cf66b17f2942d3e5560744c28d1a527f9c7','admin','2017-04-03 10:37:24');
 
 /*Table structure for table `villages` */
 
